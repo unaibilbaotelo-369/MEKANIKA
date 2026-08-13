@@ -2,7 +2,8 @@
 
 Descripción breve:
 
-Este directorio contendrá el simulador "Aire acondicionado". Aquí se colocará el fichero principal (index.html) y los recursos necesarios (CSS, JS, imágenes) para su correcto funcionamiento en el navegador.
+ongi etorria!
+Simulador "Aire acondicionado". 
 
 Objetivo:
 - Facilitar el aprendizaje sobre sistemas de climatización y su funcionamiento en vehículos.
