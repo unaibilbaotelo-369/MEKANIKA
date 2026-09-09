@@ -763,6 +763,52 @@
     #btn-maquina:hover { transform: scale(1.04); box-shadow: 0 4px 20px rgba(249,115,22,0.35); }
     #btn-maquina.active { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
 
+    #btn-distribucion {
+      background: linear-gradient(135deg, #38bdf8, #0284c7);
+      color: #06202e;
+      border: none;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    #btn-distribucion:hover { transform: scale(1.04); box-shadow: 0 4px 20px rgba(56,189,248,0.4); }
+
+    /* Modal de distribución de aire (caja climática embebida) */
+    .distribucion-modal {
+      display: none; position: fixed; inset: 0; background: rgba(3,7,18,0.82);
+      z-index: 9999; padding: 16px; backdrop-filter: blur(2px);
+    }
+    .distribucion-modal.show { display: flex; align-items: center; justify-content: center; }
+    .distribucion-modal-inner {
+      position: relative; width: 100%; max-width: 1320px; height: 94vh;
+      background: #14171a; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 1px solid #334155;
+      display: flex; flex-direction: column;
+    }
+    .distribucion-modal-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; background: #0f172a; border-bottom: 1px solid #334155;
+      flex-shrink: 0;
+    }
+    .distribucion-modal-bar h2 {
+      font-size: 1rem; margin: 0; color: #38bdf8; background: none;
+      -webkit-text-fill-color: #38bdf8;
+    }
+    .distribucion-close {
+      background: #1e293b; color: #e2e8f0; border: 1px solid #334155;
+      width: 34px; height: 34px; border-radius: 8px; cursor: pointer;
+      font-size: 16px; line-height: 1; flex-shrink: 0;
+    }
+    .distribucion-close:hover { background: #334155; }
+    .distribucion-iframe { width: 100%; height: 100%; border: 0; flex-grow: 1; background: #14171a; }
+    @media (max-width: 700px) {
+      .distribucion-modal { padding: 0; }
+      .distribucion-modal-inner { height: 100vh; max-width: 100%; border-radius: 0; }
+    }
+
     #btn-averias {
       background: linear-gradient(135deg, #5b21b6, #4c1d95);
       color: #f5f3ff;
@@ -1255,6 +1301,17 @@
   <!-- Overlay de flasazos rojos al producirse la avería -->
   <div id="damage-flash"></div>
 
+  <!-- Modal: Distribución del aire (caja climática embebida en iframe aislado) -->
+  <div class="distribucion-modal" id="distribucion-modal">
+    <div class="distribucion-modal-inner">
+      <div class="distribucion-modal-bar">
+        <h2 data-i18n="distModalTitle">Distribución de aire · Caja climática</h2>
+        <button type="button" class="distribucion-close" id="btn-distribucion-close" title="Cerrar" data-i18n-title="distModalClose">✕</button>
+      </div>
+      <iframe class="distribucion-iframe" id="iframe-distribucion" title="Distribución de aire"></iframe>
+    </div>
+  </div>
+
   <div class="container">
     <h1 data-i18n="title">Simulador del Sistema de Aire Acondicionado</h1>
     <p class="subtitle" data-i18n="subtitle">Explora e investiga para aprender cómo funciona el ciclo de generación de frío.</p>
@@ -1262,6 +1319,7 @@
     <div class="controls">
       <button id="btn-animar" data-i18n="btnAnim">Modo animación</button>
       <button id="btn-maquina" data-i18n="btnMaq">🔧 Conexión máquina</button>
+      <button id="btn-distribucion" data-i18n="btnDist">💨 Distribución del aire</button>
       <button id="btn-averias">🟣 Averías <span class="avg-led" id="avg-led-label">OFF</span></button>
       <span class="anim-status" id="anim-status" data-i18n="animStatus">Entra en el modo animación para interactuar</span>
     </div>
@@ -2554,6 +2612,7 @@ Modo averías activo: se generará un fallo oculto.</div>
           subtitle: 'Explora e investiga para aprender cómo funciona el ciclo de generación de frío.',
           btnAnim: 'Modo animación', btnAnimOn: 'Modo básico',
           btnMaq: '🔧 Conexión máquina', btnMaqOn: '🔧 Desconectar máquina',
+          btnDist: '💨 Distribución del aire', distModalTitle: 'Distribución de aire · Caja climática', distModalClose: 'Cerrar',
           btnAvg: '🟣 Averías',
           animStatus: 'Entra en el modo animación para interactuar',
           animStatusOn: 'Modo animación · Usa el panel de control para manejar el sistema',
@@ -2607,6 +2666,7 @@ Modo averías activo: se generará un fallo oculto.</div>
           subtitle: 'Arakatu eta ikertu hotza sortzeko zikloak nola funtzionatzen duen ikasteko.',
           btnAnim: 'Animazio modua', btnAnimOn: 'Oinarrizko modua',
           btnMaq: '🔧 Makina konektatu', btnMaqOn: '🔧 Makina deskonektatu',
+          btnDist: '💨 Airearen banaketa', distModalTitle: 'Airearen banaketa · Klimatizazio-kutxa', distModalClose: 'Itxi',
           btnAvg: '🟣 Matxurak',
           animStatus: 'Sartu animazio moduan elkarreragiteko',
           animStatusOn: 'Animazio modua · Erabili kontrol panela sistema kudeatzeko',
@@ -2660,6 +2720,7 @@ Modo averías activo: se generará un fallo oculto.</div>
           subtitle: 'Explore and investigate how the refrigeration cycle works.',
           btnAnim: 'Animation mode', btnAnimOn: 'Basic mode',
           btnMaq: '🔧 Connect machine', btnMaqOn: '🔧 Disconnect machine',
+          btnDist: '💨 Air distribution', distModalTitle: 'Air distribution · Climate box', distModalClose: 'Close',
           btnAvg: '🟣 Faults',
           animStatus: 'Enter animation mode to interact',
           animStatusOn: 'Animation mode · Use the control panel to operate the system',
@@ -3206,12 +3267,59 @@ Modo averías activo: se generará un fallo oculto.</div>
         if (!I18N[lang]) return;
         LANG = lang;
         applyI18n();
+        document.querySelectorAll('[data-i18n-title]').forEach(function(el) {
+          el.title = t(el.getAttribute('data-i18n-title'));
+        });
+        syncDistribucionLang();
       }
       window.setLang = setLang;
 
       document.getElementById('btn-cas') && document.getElementById('btn-cas').addEventListener('click', function() { setLang('es'); });
       document.getElementById('btn-eus') && document.getElementById('btn-eus').addEventListener('click', function() { setLang('eu'); });
       document.getElementById('btn-ing') && document.getElementById('btn-ing').addEventListener('click', function() { setLang('en'); });
+
+      // ===== Módulo "Distribución del aire" (caja climática, en iframe aislado) =====
+      let distribucionLoaded = false;
+      function syncDistribucionLang() {
+        const ifr = document.getElementById('iframe-distribucion');
+        if (ifr && ifr.contentWindow && distribucionLoaded) {
+          try { ifr.contentWindow.postMessage({ type: 'caja-set-lang', lang: LANG }, '*'); } catch (e) {}
+        }
+      }
+      function openDistribucionModal() {
+        const modal = document.getElementById('distribucion-modal');
+        const ifr = document.getElementById('iframe-distribucion');
+        if (!distribucionLoaded) {
+          const src = document.getElementById('caja-climatica-src');
+          if (src) {
+            const raw = src.textContent.split('<\\/script>').join('<' + '/script>');
+            ifr.addEventListener('load', function onLoad() {
+              distribucionLoaded = true;
+              syncDistribucionLang();
+            }, { once: true });
+            ifr.srcdoc = raw;
+          }
+        } else {
+          syncDistribucionLang();
+        }
+        modal.classList.add('show');
+      }
+      function closeDistribucionModal() {
+        document.getElementById('distribucion-modal').classList.remove('show');
+      }
+      document.getElementById('btn-distribucion').addEventListener('click', openDistribucionModal);
+      document.getElementById('btn-distribucion-close').addEventListener('click', closeDistribucionModal);
+      document.getElementById('distribucion-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeDistribucionModal();
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('distribucion-modal').classList.contains('show')) {
+          closeDistribucionModal();
+        }
+      });
+      window.addEventListener('message', function(ev) {
+        if (ev.data && ev.data.type === 'caja-close-modal') { closeDistribucionModal(); }
+      });
 
       const btn = document.getElementById('btn-animar');
       const btnMaquina = document.getElementById('btn-maquina');
@@ -5077,5 +5185,1373 @@ Modo averías activo: se generará un fallo oculto.</div>
     })();
   </script>
 <div class="signature">U.B.T.</div>
+
+  <!-- Código fuente completo de la caja climática (se inyecta en el iframe al abrir el modal) -->
+  <script type="text/plain" id="caja-climatica-src"><!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title data-i18n="pageTitle">Climatización · Distribución de aire</title>
+<style>
+:root{--bg:#14171a;--panel:#1b2024;--panel2:#20262b;--line:#2b3238;
+--copper:#9a7b0a;--copperbr:#c9a227;--cold:#57b9d9;--coldbr:#8fdcff;
+--hot:#ff5a36;--data:#57d9c8;--ink:#e7eaed;--dim:#8b939b;--fault:#e8483a;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:sans-serif}
+h2,h3,h4{font-family:'Oswald',Arial,sans-serif;letter-spacing:.03em}
+.mono{font-family:monospace}
+.wrapper{max-width:1320px;margin:0 auto;padding:18px}
+.screen{display:none}.screen.active{display:block}
+.intro-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+padding:40px;max-width:640px;margin:48px auto}
+.intro-card h2{margin:0 0 16px;font-size:26px}
+.intro-card p{color:var(--dim);font-size:14.5px;line-height:1.65}
+.intro-list{list-style:none;padding:0;color:var(--dim);font-size:13.5px}
+.intro-list li{padding:8px 0;border-bottom:1px dashed var(--line)}
+.btn-start{background:var(--copperbr);color:#1a1000;border:none;padding:15px 30px;
+font-size:15px;font-weight:700;border-radius:8px;cursor:pointer;width:100%}
+.sim-header{display:flex;justify-content:space-between;align-items:center;
+border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:16px}
+.btn-action{background:var(--panel2);color:var(--ink);border:1px solid var(--line);
+padding:9px 18px;border-radius:6px;cursor:pointer}
+.hvac-panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+padding:14px 20px;margin-bottom:12px;margin-top:4px;display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+.hvac-group{display:flex;flex-direction:column;gap:8px;min-width:170px}
+.hvac-group.wide{flex-grow:1;min-width:220px}
+.hvac-label{font-size:13.5px;font-weight:600;color:var(--copperbr)}
+.hvac-label span{color:var(--ink);font-family:monospace}
+.slider{width:100%;height:9px}
+.temp-readout{font-family:monospace;font-size:24px;font-weight:700;text-align:center;
+padding:8px 12px;border-radius:8px;background:#0f1215;border:1px solid var(--line)}
+.temp-readout.cold{color:var(--coldbr)}.temp-readout.hot{color:var(--hot)}
+.hvac-btn{background:var(--panel2);color:var(--ink);border:1px solid var(--line);
+padding:12px 16px;border-radius:6px;cursor:pointer;font-size:13.5px;font-weight:600;min-height:42px}
+.hvac-btn.on-ac{background:var(--cold);color:#071824}
+.hvac-btn.on-auto{background:var(--data);color:#072622}
+.hvac-btn.on-manual{background:var(--copper);color:#1a1000}
+.hvac-btn.on-dist{background:var(--copperbr);color:#1a1000}
+.hvac-btn-group{display:flex;gap:6px;flex-wrap:wrap}
+.warning-banner{display:none;background:rgba(232,72,58,.12);border:1px solid var(--fault);
+border-radius:8px;padding:10px 16px;margin-bottom:12px;font-size:13px;color:var(--fault)}
+.warning-banner.show{display:block}
+.sim-layout{display:block;margin-bottom:16px}
+.sim-canvas{border:1px solid var(--line);border-radius:14px;padding:12px;background:#4a5360}
+.info-panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+padding:16px;font-size:14px;line-height:1.6;color:var(--dim);margin-bottom:12px}
+.info-panel h4{margin:0 0 10px;color:var(--data);text-transform:uppercase;font-size:14px}
+.estado-line{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);
+font-size:13px;color:var(--copperbr)}
+.data-row{display:flex;justify-content:space-between;padding:8px 0;
+border-bottom:1px solid var(--panel2);font-size:14px}
+.data-row .val{font-family:monospace;font-weight:700;color:var(--data)}
+.legend-row{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:8px}
+.legend-swatch{width:14px;height:14px;border-radius:3px}
+svg{width:100%;height:auto;display:block}
+.btn-action{padding:11px 18px;font-size:14px}
+/* Flujo tipo gas: suave y continuo (sin aspecto de cubos) */
+@keyframes flowGas {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -50; }
+}
+.pipe-flowing {
+  stroke-dasharray: 15 5;
+  animation: flowGas 0.7s linear infinite;
+  stroke-linecap: round;
+}
+@keyframes dropletDrift {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  50%  { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+@keyframes condensateDrip {
+  0%   { opacity: 0; transform: translateY(0); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(28px); }
+}
+.droplet {
+  fill: #b8f0ff;
+  stroke: #ffffff;
+  stroke-width: 1.2;
+  opacity: 0;
+  pointer-events: none;
+}
+.droplet.active { animation: dropletDrift 1.4s ease-in-out infinite; }
+.condensate-drop {
+  fill: #57b9d9;
+  opacity: 0;
+  pointer-events: none;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.condensate-drop.active { animation: condensateDrip 1.3s ease-in infinite; }
+.comp-label { pointer-events: none; }
+@media(max-width:700px){
+  .wrapper{padding:8px}
+  .sim-header{flex-wrap:wrap;gap:8px;margin-bottom:10px}
+  .sim-header h3{font-size:15px}
+  .btn-action{padding:10px 14px;font-size:13px}
+  .hvac-panel{padding:12px 12px;gap:12px}
+  .hvac-group{min-width:130px;flex:1 1 40%}
+  .hvac-label{font-size:13px}
+  .temp-readout{font-size:22px;padding:8px 10px}
+  .hvac-btn{padding:12px 14px;font-size:13px;min-height:44px}
+  .info-panel{font-size:14px;padding:14px}
+  .data-row{font-size:14px;padding:9px 0}
+  .legend-row{font-size:13px}
+  .estado-line{font-size:13px}
+  .slider{height:10px}
+  .sim-canvas{padding:8px}
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <!-- PANTALLA 1: INICIO -->
+  <div id="screen-menu" class="screen active">
+    <div class="intro-card">
+      <h2 data-i18n="introTitle">Distribución de aire · Caja climática</h2>
+      <p data-i18n="introDesc">Sigue el recorrido del aire desde el exterior hasta el habitáculo:
+      toma de aire exterior o recirculación, soplante, filtro de habitáculo,
+      evaporador (A/C), trampilla de mezcla sobre el radiador de calefacción
+      y las salidas al habitáculo.</p>
+      <ul class="intro-list">
+        <li data-i18n="introLi1">01 · Modo manual: mueve las trampillas para lograr la consigna</li>
+        <li data-i18n="introLi2">02 · Modo automático: la ECU posiciona trampillas y ventilador</li>
+        <li data-i18n="introLi3">03 · Fallo simulado: AC desconectado + calor + consigna baja → inalcanzable</li>
+        <li data-i18n="introLi4">04 · El aire pasa SIEMPRE por el evaporador; la mezcla decide cuánto va al radiador</li>
+        <li data-i18n="introLi5">05 · Gotitas según aire exterior y T°; con A/C se eliminan en el evaporador, sin A/C llegan a las salidas</li>
+      </ul>
+      <button class="btn-start" id="btnStart" onclick="iniciarSimulador()" data-i18n="btnStart">Iniciar simulador ➔</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA2: SIMULADOR -->
+  <div id="screen-sim" class="screen">
+    <div class="sim-header">
+      <h3 data-i18n="simHeaderTitle">Climatización · Recorrido del aire</h3>
+      <div>
+        <button class="btn-action" id="btnToggleLabels" onclick="toggleLabels()" data-i18n="labelsShow">🏷 Etiquetas</button>
+        <button class="btn-action" onclick="resetSim()" data-i18n="btnReset">⟲ Reiniciar</button>
+        <button class="btn-action" onclick="volverAlMenu()" data-i18n="btnHome">Inicio</button>
+      </div>
+    </div>
+
+    <div class="warning-banner" id="warnBanner"><span id="warnText"></span></div>
+    <div class="sim-layout">
+      <div class="sim-canvas">
+        <svg viewBox="0 0 1140 650" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#dfe4e9"/>
+              <stop offset="45%" stop-color="#9aa2ab"/>
+              <stop offset="100%" stop-color="#4b525a"/>
+            </linearGradient>
+            <linearGradient id="metalGradV" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#c7cdd4"/>
+              <stop offset="100%" stop-color="#454c53"/>
+            </linearGradient>
+            <radialGradient id="evapGrad" cx="32%" cy="26%" r="85%">
+              <stop offset="0%" stop-color="#bdeeff"/>
+              <stop offset="55%" stop-color="#3f8fb0"/>
+              <stop offset="100%" stop-color="#173e50"/>
+            </radialGradient>
+            <radialGradient id="heaterGrad" cx="32%" cy="26%" r="85%">
+              <stop offset="0%" stop-color="#ffd7a8"/>
+              <stop offset="55%" stop-color="#c9702f"/>
+              <stop offset="100%" stop-color="#5c3010"/>
+            </radialGradient>
+            <filter id="glowFx" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="4.5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <!-- Nuevos recursos para el rediseño didáctico -->
+            <linearGradient id="ductWallGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#727c86"/>
+              <stop offset="12%" stop-color="#5c6672"/>
+              <stop offset="50%" stop-color="#4a525c"/>
+              <stop offset="88%" stop-color="#5c6672"/>
+              <stop offset="100%" stop-color="#333940"/>
+            </linearGradient>
+            <linearGradient id="caseGradV" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#333a41"/>
+              <stop offset="100%" stop-color="#22262b"/>
+            </linearGradient>
+            <linearGradient id="flapGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#e8c65a"/>
+              <stop offset="48%" stop-color="#c9a227"/>
+              <stop offset="100%" stop-color="#8a6c14"/>
+            </linearGradient>
+            <linearGradient id="ventGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#6b737c"/>
+              <stop offset="100%" stop-color="#383e45"/>
+            </linearGradient>
+            <linearGradient id="glassCold" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#0e1013" stop-opacity="0"/>
+              <stop offset="100%" stop-color="#57b9d9" stop-opacity=".18"/>
+            </linearGradient>
+            <radialGradient id="hubGrad" cx="35%" cy="30%" r="75%">
+              <stop offset="0%" stop-color="#eef1f4"/>
+              <stop offset="100%" stop-color="#5c6672"/>
+            </radialGradient>
+            <filter id="softShadow" x="-40%" y="-40%" width="180%" height="180%">
+              <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.35"/>
+            </filter>
+            <pattern id="hatchPattern" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+              <rect width="6" height="6" fill="transparent"/>
+              <line x1="0" y1="0" x2="0" y2="6" stroke="#000" stroke-opacity="0.18" stroke-width="1.4"/>
+            </pattern>
+          </defs>
+
+          <!-- Carcasa técnica de fondo (contorno de la caja climática) -->
+          <g id="housing-shell" opacity="0.9">
+            <rect x="18" y="60" width="1104" height="580" rx="18"
+                  fill="none" stroke="#3a4148" stroke-width="2" stroke-dasharray="2 6" opacity="0.55"/>
+            <rect x="182" y="170" width="700" height="372" rx="20"
+                  fill="#3d444c" opacity="0.28" stroke="#4b525a" stroke-width="1.5"/>
+            <text x="532" y="192" fill="#5c6672" font-size="12" letter-spacing="2" text-anchor="middle" opacity="0.8" data-i18n="svgHousing">CAJA DE CLIMATIZACIÓN — CORTE ESQUEMÁTICO</text>
+          </g>
+
+          <!-- Toma exterior: rejilla con lamas -->
+          <g id="intake-ext-g">
+            <rect x="52" y="86" width="86" height="108" rx="8" fill="url(#caseGradV)" stroke="#20262b" stroke-width="2.5"/>
+            <path d="M 60 96 L 130 96" stroke="#0e1013" stroke-width="3" opacity="0.4"/>
+            <g stroke="#0e1013" stroke-width="2.6" opacity="0.55">
+              <path d="M 60 108 L 130 100"/>
+              <path d="M 60 122 L 130 114"/>
+              <path d="M 60 136 L 130 128"/>
+              <path d="M 60 150 L 130 142"/>
+              <path d="M 60 164 L 130 156"/>
+              <path d="M 60 178 L 130 170"/>
+            </g>
+            <rect x="52" y="86" width="86" height="108" rx="8" fill="none" stroke="#5c6672" stroke-width="1.4" opacity="0.7"/>
+            <g id="intake-arrows" opacity="0.08">
+              <path d="M 78 44 L 78 80 M 71 70 L 78 82 L 85 70"
+                    fill="none" stroke="#8fdcff" stroke-width="2.6" stroke-linecap="round"/>
+              <path d="M 96 34 L 96 80 M 89 70 L 96 82 L 103 70"
+                    fill="none" stroke="#8fdcff" stroke-width="2.6" stroke-linecap="round"/>
+              <path d="M 114 44 L 114 80 M 107 70 L 114 82 L 121 70"
+                    fill="none" stroke="#8fdcff" stroke-width="2.6" stroke-linecap="round"/>
+            </g>
+            <text x="95" y="224" fill="#8fdcff" font-size="16" text-anchor="middle" id="extTempSvg">35 °C</text>
+          </g>
+
+          <!-- Recirculación (conducto siempre visible, pero flujo solo si hay recirculación) -->
+          <path d="M 960 130 L 314 130 Q 300 130 300 144 L 300 190" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-recirc-bg" d="M 960 130 L 314 130 Q 300 130 300 144 L 300 190" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 960 130 L 314 130 Q 300 130 300 144 L 300 190" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-recirc" d="M 960 130 L 314 130 Q 300 130 300 144 L 300 190"
+                fill="none" stroke="#57b9d9" stroke-width="44" stroke-linecap="butt" stroke-linejoin="round" opacity="0.5"/>
+          <g id="recirc-arrows" opacity="0">
+            <path d="M 480 130 L 440 130 M 450 123 L 438 130 L 450 137"
+                  fill="none" stroke="#57b9d9" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 400 130 L 360 130 M 370 123 L 358 130 L 370 137"
+                  fill="none" stroke="#57b9d9" stroke-width="4" stroke-linecap="round"/>
+          </g>
+          <text class="comp-label" id="recircLabelText" x="640" y="100" fill="#e7eaed" font-size="13" font-weight="600" text-anchor="middle" data-i18n="svgRecirc">RECIRCULACIÓN</text>
+          <text id="recircTempSvg" x="640" y="146" fill="#57b9d9" font-size="16" text-anchor="middle" opacity="0.5">25 °C</text>
+
+          <!-- Conducto exterior -->
+          <path d="M 130 190 L 201 190 Q 215 190 215 204 L 215 232" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-intake-ext-bg" d="M 130 190 L 201 190 Q 215 190 215 204 L 215 232" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 130 190 L 201 190 Q 215 190 215 204 L 215 232" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-intake-ext"
+                d="M 130 190 L 201 190 Q 215 190 215 204 L 215 232"
+                fill="none" stroke="#57b9d9" stroke-width="44" stroke-linecap="butt" stroke-linejoin="round" opacity="0.35"/>
+          <!-- Conducto recirculación (solo visible si hay recirculación) -->
+          <path d="M 300 190 L 300 226 Q 300 240 286 240 L 215 240" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-intake-recirc-bg" d="M 300 190 L 300 226 Q 300 240 286 240 L 215 240" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 300 190 L 300 226 Q 300 240 286 240 L 215 240" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-intake-recirc"
+                d="M 300 190 L 300 226 Q 300 240 286 240 L 215 240"
+                fill="none" stroke="#57b9d9" stroke-width="44" stroke-linecap="butt" stroke-linejoin="round" opacity="0.35"/>
+
+          <!-- Trampilla recirculación: válvula de mariposa realista (dibujada tras los conductos para que sea visible) -->
+          <g id="recirc-valve-static">
+            <circle cx="215" cy="240" r="26" fill="none" stroke="#20262b" stroke-width="3" opacity="0.5"/>
+          </g>
+          <g id="recirc-flap-g" transform="rotate(90 215 240)">
+            <ellipse cx="215" cy="240" rx="25" ry="9" fill="url(#flapGrad)" stroke="#5a4708" stroke-width="1.6"/>
+            <line x1="190" y1="240" x2="240" y2="240" stroke="#5a4708" stroke-width="2" opacity="0.7"/>
+            <ellipse cx="215" cy="240" rx="25" ry="9" fill="none" stroke="#fff2c4" stroke-width="0.8" opacity="0.6"/>
+          </g>
+          <circle cx="215" cy="240" r="5" fill="url(#hubGrad)" stroke="#20262b" stroke-width="1.4"/>
+          <line x1="215" y1="216" x2="215" y2="264" stroke="#20262b" stroke-width="3" opacity="0.4"/>
+
+
+          <!-- Soplante: turbina centrífuga con voluta -->
+          <path d="M 215 310 m -50 -6 a 50 50 0 1 1 34 47 L 232 375 L 205 366 L 213 348 a 44 44 0 1 0 -32 -42 Z"
+                fill="url(#metalGrad)" stroke="#20262b" stroke-width="2.5" opacity="0.9"/>
+          <circle cx="215" cy="310" r="44" fill="#0e1013"
+                  stroke="url(#metalGrad)" stroke-width="4" filter="url(#softShadow)"/>
+          <circle cx="215" cy="310" r="38" fill="none" stroke="#2b3238" stroke-width="1" opacity="0.6"/>
+          <g id="blower-rot-g" opacity="0.15" transform="rotate(0 215 310)">
+            <g fill="#c3cad2" stroke="#7d848c" stroke-width="0.6">
+              <path d="M 215 310 L 215 272 Q 240 278 236 304 Z"/>
+              <path d="M 215 310 L 246 292 Q 258 314 236 328 Z"/>
+              <path d="M 215 310 L 246 328 Q 236 350 210 344 Z"/>
+              <path d="M 215 310 L 194 344 Q 172 332 182 308 Z"/>
+              <path d="M 215 310 L 182 308 Q 178 282 202 276 Z"/>
+              <path d="M 215 310 L 202 276 Q 214 270 215 272 Z" opacity="0.85"/>
+            </g>
+          </g>
+          <circle cx="215" cy="310" r="9" fill="url(#hubGrad)" stroke="#20262b" stroke-width="1.6"/>
+
+          <path d="M 215 354 L 215 396 Q 215 410 229 410 L 320 410" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-blower-evap-bg" d="M 215 354 L 215 396 Q 215 410 229 410 L 320 410" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 215 354 L 215 396 Q 215 410 229 410 L 320 410" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-blower-evap" d="M 215 354 L 215 396 Q 215 410 229 410 L 320 410"
+                fill="none" stroke="#57b9d9" stroke-width="44" stroke-linecap="butt" stroke-linejoin="round" opacity="0"/>
+
+          <!-- Filtro de habitáculo: cartucho plisado -->
+          <rect x="316" y="384" width="98" height="52" rx="6"
+                fill="url(#caseGradV)" stroke="#20262b" stroke-width="2.5"/>
+          <rect x="324" y="392" width="82" height="36" rx="2" fill="#241f10" stroke="#c9a227" stroke-width="1.5"/>
+          <path d="M 330 394 L 336 426 L 342 394 L 348 426 L 354 394 L 360 426
+                   L 366 394 L 372 426 L 378 394 L 384 426 L 390 394 L 396 426 L 400 394"
+                fill="none" stroke="#c9a227" stroke-width="1.6" opacity="0.85" stroke-linejoin="round"/>
+          <rect x="404" y="380" width="6" height="12" rx="2" fill="#8a6c14"/>
+
+          <path d="M 414 410 L 470 410" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-filter-evap-bg" d="M 414 410 L 470 410" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 414 410 L 470 410" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-filter-evap" d="M 414 410 L 470 410"
+                fill="none" stroke="#57b9d9" stroke-width="44" stroke-linecap="butt" opacity="0"/>
+
+          <!-- Circuito freón + válvula de expansión -->
+          <g id="freon-circuit">
+            <path d="M 430 520 L 430 470 L 448 455" fill="none" stroke="#1a4a6a" stroke-width="7" stroke-linecap="round" opacity="0.35"/>
+            <path d="M 430 520 L 430 470 L 448 455" fill="none" stroke="#6ec6ff" stroke-width="5" stroke-linecap="round"/>
+            <!-- Válvula de expansión termostática con bulbo sensor y capilar -->
+            <g id="expansion-valve-g">
+              <path d="M 490 412 Q 476 402 476 428" fill="none" stroke="#8a919a" stroke-width="1.6" stroke-dasharray="2 2" opacity="0.85"/>
+              <circle cx="490" cy="412" r="5" fill="#c9d0d8" stroke="#2b3238" stroke-width="1.4"/>
+              <rect x="436" y="438" width="38" height="26" rx="5" fill="url(#metalGrad)" stroke="#20262b" stroke-width="2"/>
+              <rect x="443" y="444" width="24" height="6" rx="2" fill="#57b9d9" stroke="#1d4c61" stroke-width="0.8"/>
+              <path d="M 443 456 L 467 456" stroke="#1d4c61" stroke-width="1.4" opacity="0.6"/>
+              <circle cx="474" cy="451" r="3.5" fill="#0e1013" stroke="#8fdcff" stroke-width="1"/>
+              <path d="M 436 451 L 428 451" stroke="#7d848c" stroke-width="3"/>
+            </g>
+            <path d="M 474 451 L 482 430 L 494 410" fill="none" stroke="#8fdcff" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 510 370 L 510 340 L 470 320 L 430 320" fill="none" stroke="#0e2e3c" stroke-width="9" stroke-linecap="round" opacity="0.3"/>
+            <path d="M 510 370 L 510 340 L 470 320 L 430 320" fill="none" stroke="#3a8fb5" stroke-width="7" stroke-linecap="round"/>
+          </g>
+
+          <!-- Evaporador: intercambiador de tubos y aletas -->
+          <g id="evap-core">
+            <rect x="466" y="366" width="88" height="88" rx="10" fill="url(#caseGradV)" stroke="#20262b" stroke-width="2"/>
+            <rect x="474" y="374" width="72" height="72" rx="6"
+                  fill="url(#evapGrad)" stroke="#1d4c61" stroke-width="3"/>
+            <!-- aletas finas -->
+            <path d="M 480 382 L 540 382 M 480 391 L 540 391 M 480 400 L 540 400
+                     M 480 409 L 540 409 M 480 418 L 540 418 M 480 427 L 540 427
+                     M 480 436 L 540 436"
+                  stroke="#0e2e3c" stroke-width="1.6" opacity="0.55"/>
+            <!-- tubos en U -->
+            <path d="M 484 380 L 484 440 M 500 380 L 500 440 M 516 380 L 516 440 M 532 380 L 532 440"
+                  stroke="#bdeeff" stroke-width="2.4" opacity="0.5" stroke-linecap="round"/>
+            <circle cx="484" cy="380" r="2.6" fill="#bdeeff" opacity="0.6"/>
+            <circle cx="500" cy="440" r="2.6" fill="#bdeeff" opacity="0.6"/>
+            <circle cx="516" cy="380" r="2.6" fill="#bdeeff" opacity="0.6"/>
+            <circle cx="532" cy="440" r="2.6" fill="#bdeeff" opacity="0.6"/>
+          </g>
+          <text x="510" y="486" fill="#8b939b" font-size="15.5" text-anchor="middle" id="evapTempSvg">25 °C</text>
+          <g id="condensate-g" opacity="0">
+            <circle class="condensate-drop" data-prio="1" cx="488" cy="454" r="3.2" style="animation-delay:0s"/>
+            <circle class="condensate-drop" data-prio="2" cx="505" cy="456" r="1.9" style="animation-delay:0.4s"/>
+            <circle class="condensate-drop" data-prio="1" cx="520" cy="452" r="3.0" style="animation-delay:0.8s"/>
+            <circle class="condensate-drop" data-prio="3" cx="535" cy="455" r="2.4" style="animation-delay:1.1s"/>
+            <text x="510" y="500" fill="#57b9d9" font-size="12" text-anchor="middle" id="condensateLabel" data-i18n="svgCondensate">💧 condensado</text>
+          </g>
+
+          <path d="M 554 410 L 622 410" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-evap-mix-bg" d="M 554 410 L 622 410" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 554 410 L 622 410" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-evap-mix" d="M 554 410 L 622 410"
+                fill="none" stroke="#57b9d9" stroke-width="44" stroke-linecap="butt" opacity="0"/>
+          <!-- Derivaciones: by-pass (arriba) y radiador (abajo) -->
+          <path d="M 640 410 L 640 374 Q 640 360 654 360 L 760 360" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-bypass-bg" d="M 640 410 L 640 374 Q 640 360 654 360 L 760 360" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 640 410 L 640 374 Q 640 360 654 360 L 760 360" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-bypass" d="M 640 410 L 640 374 Q 640 360 654 360 L 760 360"
+                fill="none" stroke="#57b9d9" stroke-width="44" stroke-linecap="butt" stroke-linejoin="round" opacity="0.15"/>
+          <path d="M 640 410 L 640 466 Q 640 480 654 480 L 760 480" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-to-heater-bg" d="M 640 410 L 640 466 Q 640 480 654 480 L 760 480" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 640 410 L 640 466 Q 640 480 654 480 L 760 480" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-to-heater" d="M 640 410 L 640 466 Q 640 480 654 480 L 760 480"
+                fill="none" stroke="#ff5a36" stroke-width="44" stroke-linecap="butt" stroke-linejoin="round" opacity="0.15"/>
+
+          <!-- Trampilla de mezcla: válvula de mariposa (dibujada tras los conductos para que sea visible) -->
+          <circle cx="640" cy="410" r="26" fill="none" stroke="#20262b" stroke-width="3" opacity="0.5"/>
+          <g id="mix-flap-g" transform="rotate(90 640 410)">
+            <ellipse cx="640" cy="410" rx="25" ry="9" fill="url(#flapGrad)" stroke="#5a4708" stroke-width="1.6"/>
+            <line x1="615" y1="410" x2="665" y2="410" stroke="#5a4708" stroke-width="2" opacity="0.7"/>
+            <ellipse cx="640" cy="410" rx="25" ry="9" fill="none" stroke="#fff2c4" stroke-width="0.8" opacity="0.6"/>
+          </g>
+          <circle cx="640" cy="410" r="5" fill="url(#hubGrad)" stroke="#20262b" stroke-width="1.4"/>
+          <line x1="640" y1="386" x2="640" y2="434" stroke="#20262b" stroke-width="3" opacity="0.4"/>
+
+
+          <!-- Circuito refrigerante motor + termostato de cera -->
+          <g id="coolant-circuit">
+            <path d="M 680 600 L 680 560 L 700 540" fill="none" stroke="#8b2e0a" stroke-width="9" stroke-linecap="round" opacity="0.4"/>
+            <path id="coolant-in" d="M 680 600 L 680 560 L 700 540" fill="none" stroke="#ff5a36" stroke-width="6" stroke-linecap="round"/>
+            <g id="thermostat-g">
+              <rect x="698" y="516" width="28" height="24" rx="4" fill="url(#metalGrad)" stroke="#20262b" stroke-width="2"/>
+              <circle cx="712" cy="528" r="13" fill="#3d434a" stroke="#7d848c" stroke-width="1.5"/>
+              <path d="M 705 528 Q 708 520 712 528 Q 716 536 719 528" fill="none" stroke="#8a919a" stroke-width="1.2" opacity="0.7"/>
+              <g id="thermostat-indicator" transform="rotate(70 712 528)">
+                <rect x="709" y="516" width="6" height="14" rx="2" fill="#ff5a36" stroke="#1a1000" stroke-width="0.8"/>
+                <path d="M 712 530 L 712 538" stroke="#ff5a36" stroke-width="2"/>
+              </g>
+              <circle cx="712" cy="528" r="3.5" fill="#e7eaed"/>
+            </g>
+            <path d="M 726 520 L 755 500 L 760 470" fill="none" stroke="#8b2e0a" stroke-width="8" stroke-linecap="round" opacity="0.35"/>
+            <path id="coolant-to-heater" d="M 726 520 L 755 500 L 760 470" fill="none" stroke="#ff5a36" stroke-width="5.5" stroke-linecap="round"/>
+            <path d="M 760 510 L 740 530 L 740 600" fill="none" stroke="#5a2010" stroke-width="8" stroke-linecap="round" opacity="0.35"/>
+            <path id="coolant-return" d="M 760 510 L 740 530 L 740 600" fill="none" stroke="#c9702f" stroke-width="5.5" stroke-linecap="round"/>
+          </g>
+          <!-- Radiador de calefacción: intercambiador de tubos y aletas -->
+          <g id="heater-core">
+            <rect x="756" y="436" width="88" height="88" rx="10" fill="url(#caseGradV)" stroke="#20262b" stroke-width="2"/>
+            <rect x="764" y="444" width="72" height="72" rx="6"
+                  fill="url(#heaterGrad)" stroke="#6b3a12" stroke-width="3"/>
+            <rect id="heater-core-cool-overlay" x="764" y="444" width="72" height="72" rx="6"
+                  fill="#454e57" opacity="1"/>
+            <path d="M 770 452 L 830 452 M 770 461 L 830 461 M 770 470 L 830 470
+                     M 770 479 L 830 479 M 770 488 L 830 488 M 770 497 L 830 497
+                     M 770 506 L 830 506"
+                  stroke="#3d2007" stroke-width="1.6" opacity="0.55"/>
+            <path d="M 774 450 L 774 510 M 790 450 L 790 510 M 806 450 L 806 510 M 822 450 L 822 510"
+                  stroke="#ffd7a8" stroke-width="2.4" opacity="0.45" stroke-linecap="round"/>
+          </g>
+          <path d="M 760 480 L 840 480" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-through-heater-bg" d="M 760 480 L 840 480" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 760 480 L 840 480" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-through-heater" d="M 760 480 L 840 480"
+                fill="none" stroke="#ff5a36" stroke-width="44" stroke-linecap="butt" opacity="0.12"/>
+          <text x="800" y="556" fill="#ff5a36" font-size="15.5" text-anchor="middle" id="heaterTempSvg">90 °C</text>
+
+          <!-- Mezcla final -->
+          <path d="M 760 360 L 846 360 Q 860 360 860 374 L 860 400" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-mix-out-bg" d="M 760 360 L 846 360 Q 860 360 860 374 L 860 400" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 760 360 L 846 360 Q 860 360 860 374 L 860 400" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-mix-out" d="M 760 360 L 846 360 Q 860 360 860 374 L 860 400"
+                fill="none" stroke="#e7eaed" stroke-width="44" stroke-linecap="butt" stroke-linejoin="round" opacity="0.15"/>
+          <path d="M 840 480 L 850 480 Q 860 480 860 470 L 860 430" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-heater-out-bg" d="M 840 480 L 850 480 Q 860 480 860 470 L 860 430" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 840 480 L 850 480 Q 860 480 860 470 L 860 430" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-heater-out" d="M 840 480 L 850 480 Q 860 480 860 470 L 860 430"
+                fill="none" stroke="#ff5a36" stroke-width="44" stroke-linecap="butt" stroke-linejoin="round" opacity="0.15"/>
+          <circle cx="860" cy="418" r="12" fill="url(#metalGrad)" stroke="#20262b" stroke-width="2" filter="url(#softShadow)"/>
+
+          <!-- Salida desempañado -->
+          <path d="M 860 418 L 860 314 Q 860 300 874 300 L 1000 300" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-defrost-bg" d="M 860 418 L 860 314 Q 860 300 874 300 L 1000 300" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 860 418 L 860 314 Q 860 300 874 300 L 1000 300" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-defrost" d="M 860 418 L 860 314 Q 860 300 874 300 L 1000 300"
+                fill="none" stroke-width="44" stroke-linecap="butt" stroke-linejoin="round" opacity="0"/>
+          <!-- rejilla de desempañado orientada al parabrisas -->
+          <g transform="rotate(-24 1000 290)">
+            <path d="M 985 250 Q 1050 232 1075 270 L 1075 340 Q 1020 328 985 320 Z"
+                  fill="url(#ventGrad)" stroke="#20262b" stroke-width="2"/>
+            <path d="M 995 258 L 1065 275 M 995 272 L 1068 288 M 995 286 L 1068 300
+                     M 992 300 L 1062 312 M 990 313 L 1055 322"
+                  stroke="#20262b" stroke-width="2.6" opacity="0.55"/>
+          </g>
+          <g id="defrost-flow-g">
+            <path d="M 1005 288 L 1045 278 M 1035 270 L 1049 278 L 1038 288"
+                  fill="none" stroke-width="4" stroke-linecap="round" filter="url(#glowFx)" opacity="0"/>
+            <path d="M 1005 302 L 1045 296 M 1036 288 L 1049 296 L 1039 306"
+                  fill="none" stroke-width="4" stroke-linecap="round" filter="url(#glowFx)" opacity="0"/>
+          </g>
+          <text class="comp-label" id="label-defrost" x="1082" y="300" fill="#8b939b" font-size="12" font-weight="600" text-anchor="start" data-i18n="svgDefrost">DESEMPAÑADO</text>
+
+          <!-- Salida superior -->
+          <path d="M 860 418 L 886 418 Q 900 418 900 404 L 900 240 L 1000 220" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-panel-bg" d="M 860 418 L 886 418 Q 900 418 900 404 L 900 240 L 1000 220" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 860 418 L 886 418 Q 900 418 900 404 L 900 240 L 1000 220" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-panel" d="M 860 418 L 886 418 Q 900 418 900 404 L 900 240 L 1000 220"
+                fill="none" stroke-width="44" stroke-linecap="butt" stroke-linejoin="round" opacity="0"/>
+          <!-- rejilla de salida superior (louvers angulares) -->
+          <g transform="rotate(-12 1002 217)">
+            <rect x="990" y="196" width="76" height="42" rx="6" fill="url(#ventGrad)" stroke="#20262b" stroke-width="2"/>
+            <path d="M 996 204 L 1060 204 M 996 213 L 1060 213 M 996 222 L 1060 222 M 996 231 L 1060 231"
+                  stroke="#20262b" stroke-width="2.6" opacity="0.55"/>
+          </g>
+          <g id="panel-flow-g">
+            <path d="M 975 226 L 1020 208 M 1006 200 L 1022 207 L 1011 220"
+                  fill="none" stroke-width="4" stroke-linecap="round" filter="url(#glowFx)" opacity="0"/>
+          </g>
+          <text class="comp-label" id="label-panel" x="1075" y="210" fill="#8b939b" font-size="12" font-weight="600" text-anchor="start" data-i18n="svgSuperior">SUPERIOR</text>
+
+          <!-- Salida pies -->
+          <path d="M 860 418 L 886 418 Q 900 418 900 432 L 900 506 Q 900 520 914 520 L 1000 520" fill="none" stroke="#262b30" stroke-width="52" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-feet-bg" d="M 860 418 L 886 418 Q 900 418 900 432 L 900 506 Q 900 520 914 520 L 1000 520" fill="none" stroke="#7d8791" stroke-width="48" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 860 418 L 886 418 Q 900 418 900 432 L 900 506 Q 900 520 914 520 L 1000 520" fill="none" stroke="#dde1e5" stroke-width="14" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-feet" d="M 860 418 L 886 418 Q 900 418 900 432 L 900 506 Q 900 520 914 520 L 1000 520"
+                fill="none" stroke-width="44" stroke-linecap="butt" stroke-linejoin="round" opacity="0"/>
+          <g>
+            <rect x="990" y="500" width="70" height="40" rx="6" fill="url(#ventGrad)" stroke="#20262b" stroke-width="2"/>
+            <path d="M 996 508 L 1054 508 M 996 517 L 1054 517 M 996 526 L 1054 526 M 996 535 L 1054 535"
+                  stroke="#20262b" stroke-width="2.6" opacity="0.55"/>
+          </g>
+          <g id="feet-flow-g">
+            <path d="M 978 512 L 1020 512 M 1008 504 L 1022 512 L 1008 520"
+                  fill="none" stroke-width="4" stroke-linecap="round" filter="url(#glowFx)" opacity="0"/>
+          </g>
+          <text class="comp-label" id="label-feet" x="1068" y="524" fill="#8b939b" font-size="12" font-weight="600" text-anchor="start" data-i18n="svgFeet">ZONA PIES</text>
+
+          <!-- Salida traseros -->
+          <path d="M 860 418 L 891 418 Q 905 418 905 432 L 905 586 Q 905 600 919 600 L 1000 600" fill="none" stroke="#262b30" stroke-width="44" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path id="pipe-rear-bg" d="M 860 418 L 891 418 Q 905 418 905 432 L 905 586 Q 905 600 919 600 L 1000 600" fill="none" stroke="#7d8791" stroke-width="40" stroke-linecap="butt" stroke-linejoin="round" opacity="1"/>
+          <path d="M 860 418 L 891 418 Q 905 418 905 432 L 905 586 Q 905 600 919 600 L 1000 600" fill="none" stroke="#dde1e5" stroke-width="12" stroke-linecap="butt" stroke-linejoin="round" opacity="0.4"/>
+          <path id="pipe-rear" d="M 860 418 L 891 418 Q 905 418 905 432 L 905 586 Q 905 600 919 600 L 1000 600"
+                fill="none" stroke-width="36" stroke-linecap="butt" stroke-linejoin="round" opacity="0"/>
+          <g>
+            <rect x="990" y="584" width="58" height="32" rx="5" fill="url(#ventGrad)" stroke="#20262b" stroke-width="2"/>
+            <path d="M 996 591 L 1042 591 M 996 599 L 1042 599 M 996 607 L 1042 607"
+                  stroke="#20262b" stroke-width="2.4" opacity="0.55"/>
+          </g>
+          <g id="rear-flow-g">
+            <path d="M 972 599 L 1004 599 M 995 592 L 1006 599 L 995 606"
+                  fill="none" stroke-width="4" stroke-linecap="round" filter="url(#glowFx)" opacity="0"/>
+          </g>
+          <text class="comp-label" id="label-rear" x="1055" y="604" fill="#8b939b" font-size="12" font-weight="600" text-anchor="start" data-i18n="svgRear">TRASEROS</text>
+
+          <!-- Compuerta de distribución: trampilla giratoria (dibujada tras todos los conductos que confluyen aquí, para que sea visible) -->
+          <circle cx="860" cy="418" r="30" fill="none" stroke="#20262b" stroke-width="2" opacity="0.4"/>
+          <g id="dist-flap-g" transform="rotate(-20 860 418)">
+            <rect x="852" y="392" width="16" height="60" rx="5" fill="url(#flapGrad)" stroke="#5a4708" stroke-width="1.6"/>
+            <line x1="860" y1="392" x2="860" y2="452" stroke="#5a4708" stroke-width="2" opacity="0.7"/>
+            <rect x="852" y="392" width="16" height="60" rx="5" fill="none" stroke="#fff2c4" stroke-width="0.7" opacity="0.6"/>
+          </g>
+          <circle cx="860" cy="418" r="5" fill="url(#hubGrad)" stroke="#20262b" stroke-width="1.4"/>
+          <text class="comp-label" id="distFlapLabel" x="834" y="452" fill="#c9a227" font-size="11" font-weight="600" text-anchor="end">COMPUERTA</text>
+
+          <!-- Habitáculo -->
+          <rect x="20" y="555" width="240" height="66" rx="12"
+                fill="#0f1215" stroke="#2b3238" stroke-width="1.6"/>
+          <path d="M 30 566 q 18 -14 44 -14 l 130 0 q 22 0 30 14 l 4 8 l -198 0 Z"
+                fill="none" stroke="#3d434a" stroke-width="2" opacity="0.6"/>
+          <circle cx="46" cy="576" r="3" fill="#3d434a" opacity="0.6"/>
+          <text x="36" y="590" fill="#8b939b" font-size="15.5" font-weight="600" data-i18n="svgCabin">HABITÁCULO</text>
+          <text x="36" y="612" fill="#57d9c8" font-size="17" font-weight="bold" id="cabinTempSvg">25,0 °C</text>
+          <text x="150" y="612" fill="#8b939b" font-size="16" id="targetDeltaSvg"></text>
+
+          <!-- Etiquetas con flechas (sin solapes) -->
+          <g id="component-labels-extra">
+            <line class="comp-label" x1="95" y1="195" x2="95" y2="228" stroke="#a0a8b0" stroke-width="1.2"/>
+            <text class="comp-label" x="95" y="244" fill="#e7eaed" font-size="12" font-weight="600" text-anchor="middle" data-i18n="svgIntake">TOMA EXTERIOR</text>
+            <line class="comp-label" x1="215" y1="354" x2="160" y2="390" stroke="#a0a8b0" stroke-width="1.2"/>
+            <text class="comp-label" x="155" y="404" fill="#e7eaed" font-size="12" font-weight="600" text-anchor="end" data-i18n="svgBlower">SOPLANTE</text>
+            <line class="comp-label" x1="365" y1="432" x2="365" y2="458" stroke="#a0a8b0" stroke-width="1.2"/>
+            <text class="comp-label" x="365" y="474" fill="#e7eaed" font-size="12" font-weight="600" text-anchor="middle" data-i18n="svgFilter">FILTRO</text>
+            <line class="comp-label" x1="548" y1="410" x2="575" y2="348" stroke="#8fdcff" stroke-width="1.2"/>
+            <text class="comp-label" x="580" y="345" fill="#8fdcff" font-size="13" font-weight="700" text-anchor="start" data-i18n="svgEvap">EVAPORADOR</text>
+            <line class="comp-label" x1="442" y1="451" x2="390" y2="490" stroke="#8fdcff" stroke-width="1.2"/>
+            <text class="comp-label" x="385" y="504" fill="#8fdcff" font-size="11" font-weight="600" text-anchor="end" data-i18n="svgExpValve">VÁLV. EXPANSIÓN</text>
+            <line class="comp-label" x1="430" y1="505" x2="390" y2="545" stroke="#6ec6ff" stroke-width="1"/>
+            <text class="comp-label" x="385" y="558" fill="#6ec6ff" font-size="11" font-weight="600" text-anchor="end" data-i18n="svgFreonHP">FREÓN AP</text>
+            <line class="comp-label" x1="430" y1="320" x2="390" y2="295" stroke="#3a8fb5" stroke-width="1"/>
+            <text class="comp-label" x="385" y="292" fill="#3a8fb5" font-size="11" font-weight="600" text-anchor="end" data-i18n="svgFreonLP">FREÓN BP</text>
+            <line class="comp-label" x1="652" y1="414" x2="672" y2="420" stroke="#c9a227" stroke-width="1.2"/>
+            <text class="comp-label" x="676" y="424" fill="#c9a227" font-size="11" font-weight="600" text-anchor="start" data-i18n="svgMixFlap">TRAMPILLA MEZCLA</text>
+            <line class="comp-label" x1="852" y1="414" x2="830" y2="448" stroke="#c9a227" stroke-width="1.2"/>
+            <line class="comp-label" x1="840" y1="480" x2="880" y2="545" stroke="#ff5a36" stroke-width="1.2"/>
+            <text class="comp-label" x="885" y="558" fill="#ff5a36" font-size="12" font-weight="700" text-anchor="start" data-i18n="svgHeaterRad">RAD. CALEFACCIÓN</text>
+            <line class="comp-label" x1="712" y1="544" x2="650" y2="575" stroke="#ff5a36" stroke-width="1.2"/>
+            <text class="comp-label" x="645" y="588" fill="#ff5a36" font-size="11" font-weight="600" text-anchor="end" data-i18n="svgThermostat">TERMOSTATO</text>
+            <text class="comp-label" x="710" y="628" fill="#c9702f" font-size="11" font-weight="600" text-anchor="middle" data-i18n="svgCoolant">REFRIGERANTE MOTOR</text>
+          </g>
+
+          <g id="humidity-droplets-pre" opacity="0">
+            <circle class="droplet" data-prio="1" cx="145" cy="190" r="4.0" style="animation-delay:0s"/>
+            <circle class="droplet" data-prio="2" cx="175" cy="195" r="3.4" style="animation-delay:0.35s"/>
+            <circle class="droplet" data-prio="1" cx="215" cy="220" r="3.8" style="animation-delay:0.7s"/>
+            <circle class="droplet" data-prio="2" cx="215" cy="260" r="3.3" style="animation-delay:0.2s"/>
+            <circle class="droplet" data-prio="1" cx="235" cy="400" r="4.0" style="animation-delay:0.1s"/>
+            <circle class="droplet" data-prio="2" cx="280" cy="410" r="3.5" style="animation-delay:0.45s"/>
+            <circle class="droplet" data-prio="1" cx="330" cy="400" r="4.0" style="animation-delay:0.8s"/>
+            <circle class="droplet" data-prio="2" cx="380" cy="415" r="3.4" style="animation-delay:0.25s"/>
+            <circle class="droplet" data-prio="1" cx="430" cy="405" r="3.8" style="animation-delay:0.6s"/>
+            <circle class="droplet" data-prio="3" cx="450" cy="420" r="3.2" style="animation-delay:0.95s"/>
+          </g>
+          <g id="humidity-droplets-post" opacity="0">
+            <circle class="droplet" data-path="common" data-prio="1" cx="570" cy="405" r="4.0" style="animation-delay:0s"/>
+            <circle class="droplet" data-path="common" data-prio="2" cx="610" cy="410" r="3.5" style="animation-delay:0.4s"/>
+            <circle class="droplet" data-path="bypass" data-prio="1" cx="680" cy="358" r="3.8" style="animation-delay:0.15s"/>
+            <circle class="droplet" data-path="bypass" data-prio="2" cx="750" cy="360" r="3.5" style="animation-delay:0.5s"/>
+            <circle class="droplet" data-path="bypass" data-prio="1" cx="810" cy="365" r="3.6" style="animation-delay:0.85s"/>
+            <circle class="droplet" data-path="heater" data-prio="1" cx="680" cy="478" r="3.8" style="animation-delay:0.2s"/>
+            <circle class="droplet" data-path="heater" data-prio="2" cx="760" cy="480" r="3.5" style="animation-delay:0.55s"/>
+            <circle class="droplet" data-path="heater" data-prio="1" cx="820" cy="470" r="3.6" style="animation-delay:0.9s"/>
+            <circle class="droplet" data-path="junction" data-prio="1" cx="855" cy="410" r="3.8" style="animation-delay:0.1s"/>
+            <circle class="droplet" data-path="panel" data-prio="1" cx="900" cy="340" r="3.8" style="animation-delay:0.2s"/>
+            <circle class="droplet" data-path="panel" data-prio="2" cx="950" cy="250" r="3.5" style="animation-delay:0.55s"/>
+            <circle class="droplet" data-path="panel" data-prio="1" cx="1000" cy="220" r="3.8" style="animation-delay:0.9s"/>
+            <circle class="droplet" data-path="feet" data-prio="1" cx="900" cy="500" r="3.8" style="animation-delay:0.2s"/>
+            <circle class="droplet" data-path="feet" data-prio="2" cx="970" cy="520" r="3.5" style="animation-delay:0.55s"/>
+            <circle class="droplet" data-path="feet" data-prio="1" cx="960" cy="595" r="3.4" style="animation-delay:0.9s"/>
+            <circle class="droplet" data-path="defrost" data-prio="1" cx="860" cy="350" r="3.8" style="animation-delay:0.2s"/>
+            <circle class="droplet" data-path="defrost" data-prio="2" cx="930" cy="300" r="3.5" style="animation-delay:0.55s"/>
+            <circle class="droplet" data-path="defrost" data-prio="1" cx="1000" cy="298" r="3.8" style="animation-delay:0.9s"/>
+          </g>
+
+        </svg>
+      </div>
+    </div>
+
+    <!-- CONTROLES (igual que antes) -->
+    <div class="hvac-panel">
+      <div class="hvac-group">
+        <div class="hvac-label"><span data-i18n="lblExtTemp">T° exterior: </span><span id="extTempLabel">35 °C</span></div>
+        <input type="range" id="extTempSlider" min="-10" max="45" value="35" class="slider">
+      </div>
+      <div class="hvac-group">
+        <div class="hvac-label" data-i18n="lblConsigna">Consigna habitáculo</div>
+        <div class="temp-readout mild" id="targetReadout">22,0 °C</div>
+        <input type="range" id="targetTempSlider" min="16" max="30" step="0.5" value="22" class="slider">
+      </div>
+      <div class="hvac-group">
+        <div class="hvac-label"><span data-i18n="lblFan">Soplante: </span><span id="fanLabel">0</span>%</div>
+        <input type="range" id="fanSlider" min="0" max="100" value="0" class="slider">
+      </div>
+      <div class="hvac-group">
+        <div class="hvac-label" data-i18n="lblSystem">Sistema</div>
+        <div class="hvac-btn-group">
+          <button class="hvac-btn" id="btnPower" data-i18n="pwrOff">⏻ Encender</button>
+          <button class="hvac-btn" id="btnAC" data-i18n="acOffBtn">AC · A/C</button>
+          <button class="hvac-btn" id="btnMode" data-i18n="modeManualBtn">AUTO</button>
+        </div>
+      </div>
+      <div class="hvac-group">
+        <div class="hvac-label" data-i18n="lblDist">Distribución</div>
+        <div class="hvac-btn-group">
+          <button class="hvac-btn on-dist" id="btnDistPanel" data-i18n="btnSuperior">Superior</button>
+          <button class="hvac-btn" id="btnDistFeet" data-i18n="btnFeet">Pies</button>
+          <button class="hvac-btn" id="btnDistDefrost" data-i18n="btnDefrost">Desempañar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="hvac-panel" id="manualPanel">
+      <div class="hvac-group wide">
+        <div class="hvac-label"><span data-i18n="lblRecirc">Recirculación: </span><span id="recircLabel">100</span><span data-i18n="lblRecircSuffix">% exterior</span></div>
+        <input type="range" id="recircSlider" min="0" max="100" value="100" class="slider">
+      </div>
+      <div class="hvac-group wide">
+        <div class="hvac-label"><span data-i18n="lblMix">Mezcla hacia radiador: </span><span id="mixLabel">0</span>%</div>
+        <input type="range" id="mixSlider" min="0" max="100" value="0" class="slider">
+      </div>
+      <div class="hvac-group wide">
+        <div class="hvac-label"><span data-i18n="lblThermo">Termostato calefacción: </span><span id="thermoLabel">0</span><span data-i18n="lblThermoMid">% abierto · núcleo </span><span id="thermoTempLabel">—</span></div>
+        <input type="range" id="thermoSlider" min="0" max="100" value="0" class="slider">
+      </div>
+      <div class="hvac-group">
+        <div class="hvac-label" data-i18n="lblCabinNow">Habitáculo actual</div>
+        <div class="temp-readout mild" id="cabinReadout">25,0 °C</div>
+      </div>
+    </div>
+
+    <!-- DATOS -->
+    <div class="info-panel data-panel">
+      <h4 data-i18n="dataTitle">Datos del sistema</h4>
+      <div class="data-row"><span data-i18n="dataExt">T° aire exterior</span><span class="val" id="d-ext">—</span></div>
+      <div class="data-row"><span data-i18n="dataEvap">T° evaporador salida</span><span class="val" id="d-evap">—</span></div>
+      <div class="data-row"><span data-i18n="dataMix">Mezcla hacia radiador</span><span class="val" id="d-mix">—</span></div>
+      <div class="data-row"><span data-i18n="dataThermo">Termostato calefacción</span><span class="val" id="d-thermo">—</span></div>
+      <div class="data-row"><span data-i18n="dataHeaterCore">T° núcleo radiador</span><span class="val" id="d-heatercore">—</span></div>
+      <div class="data-row"><span data-i18n="dataRecirc">Recirculación</span><span class="val" id="d-recirc">—</span></div>
+      <div class="data-row"><span data-i18n="dataCabin">T° habitáculo actual</span><span class="val" id="d-cabin">—</span></div>
+      <div class="data-row"><span data-i18n="dataTarget">Consigna / objetivo</span><span class="val" id="d-target">—</span></div>
+      <div class="data-row"><span data-i18n="dataFan">Potencia soplante</span><span class="val" id="d-fan">—</span></div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#57b9d9"></span><span data-i18n="legendCold"> Aire frío (post-evaporador)</span></div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#ff5a36"></span><span data-i18n="legendHot"> Aire caliente (radiador)</span></div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#57d9c8"></span><span data-i18n="legendOut"> Aire a temperatura de salida</span></div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#8fdcff;border-radius:50%"></span><span data-i18n="legendDrops"> Gotitas de humedad (↑ exterior/T°; con A/C se eliminan en el evaporador)</span></div>
+    </div>
+
+    <!-- ANOTACIONES -->
+    <div class="info-panel">
+      <h4 id="infoTitle" data-i18n="infoTitleOff">Sistema apagado</h4>
+      <div id="infoText" data-i18n="infoTextOff">Pulsa «Encender» para arrancar el climatizador.</div>
+      <div class="estado-line" id="estadoLine" data-i18n="estadoOff">Estado: OFF</div>
+    </div>
+  </div>
+</div>
+<script>
+'use strict';
+var state = { powerOn:false, acOn:false, autoMode:false,
+  extTemp:35, targetTemp:22, cabinTemp:25,
+  fanLevel:0, recircExt:100, mixHeat:0, dist:'panel',
+  thermostatOpen:0, heaterCoreTemp:20 };
+var EVAP_DROP_AC = 14, EVAP_DROP_NOAC = 1, HEAT_GAIN_MAX = 48;
+var HEATER_HOT = 90, HEATER_COLD = 20;
+var HEATER_WARM_SECONDS = 5, HEATER_COOL_FLOWING_SECONDS = 2, HEATER_COOL_STATIC_SECONDS = 8;
+var autoAnim = { recirc:100, mix:0, fan:0 };
+var labelsVisible = true;
+
+function $(id){ return document.getElementById(id); }
+
+// ========== i18n CAS / EUS / ING ==========
+var CAJA_LANG = 'es';
+var CAJA_I18N = {
+  pageTitle:     {es:'Climatización · Distribución de aire', eu:'Klimatizazioa · Airearen banaketa', en:'Climate control · Air distribution'},
+  introTitle:    {es:'Distribución de aire · Caja climática', eu:'Airearen banaketa · Klimatizazio-kutxa', en:'Air distribution · Climate box'},
+  introDesc:     {es:'Sigue el recorrido del aire desde el exterior hasta el habitáculo: toma de aire exterior o recirculación, soplante, filtro de habitáculo, evaporador (A/C), trampilla de mezcla sobre el radiador de calefacción y las salidas al habitáculo.',
+                  eu:'Jarraitu airearen ibilbideari kanpotik kabinaraino: kanpoko aire-hartunea edo birzirkulazioa, turbina, kabinako iragazkia, lurrungailua (A/C), berogailuaren erradiadorerako nahasketa-balbula eta kabinarako irteerak.',
+                  en:'Follow the path of the air from outside to the cabin: outside air intake or recirculation, blower, cabin filter, evaporator (A/C), the mix flap over the heater core, and the outlets into the cabin.'},
+  introLi1:      {es:'01 · Modo manual: mueve las trampillas para lograr la consigna', eu:'01 · Eskuzko modua: mugitu balbulak helburua lortzeko', en:'01 · Manual mode: move the flaps to reach the setpoint'},
+  introLi2:      {es:'02 · Modo automático: la ECU posiciona trampillas y ventilador', eu:'02 · Modu automatikoa: ECUak balbulak eta haizagailua kokatzen ditu', en:'02 · Automatic mode: the ECU positions the flaps and the fan'},
+  introLi3:      {es:'03 · Fallo simulado: AC desconectado + calor + consigna baja → inalcanzable', eu:'03 · Matxura simulatua: A/C deskonektatuta + beroa + helburu baxua → ezin da lortu', en:'03 · Simulated fault: A/C off + heat + low setpoint → unreachable'},
+  introLi4:      {es:'04 · El aire pasa SIEMPRE por el evaporador; la mezcla decide cuánto va al radiador', eu:'04 · Aireak BETI lurrungailutik pasatzen da; nahasketak erradiadorerako zenbat doan erabakitzen du', en:'04 · Air ALWAYS passes through the evaporator; the mix decides how much reaches the heater'},
+  introLi5:      {es:'05 · Gotitas según aire exterior y T°; con A/C se eliminan en el evaporador, sin A/C llegan a las salidas', eu:'05 · Tantak kanpoko airearen eta T°-aren arabera; A/C-rekin lurrungailuan kentzen dira, A/C gabe irteeretara iristen dira', en:'05 · Droplets depend on outside air and T°; with A/C they are removed at the evaporator, without A/C they reach the outlets'},
+  btnStart:      {es:'Iniciar simulador ➔', eu:'Simulagailua abiarazi ➔', en:'Start simulator ➔'},
+  simHeaderTitle:{es:'Climatización · Recorrido del aire', eu:'Klimatizazioa · Airearen ibilbidea', en:'Climate control · Air path'},
+  labelsShow:    {es:'🏷 Etiquetas', eu:'🏷 Etiketak', en:'🏷 Labels'},
+  labelsHidden:  {es:'🏷 Etiquetas (ocultas)', eu:'🏷 Etiketak (ezkutuan)', en:'🏷 Labels (hidden)'},
+  btnReset:      {es:'⟲ Reiniciar', eu:'⟲ Berrabiarazi', en:'⟲ Reset'},
+  btnHome:       {es:'Inicio', eu:'Hasiera', en:'Home'},
+  svgHousing:    {es:'CAJA DE CLIMATIZACIÓN — CORTE ESQUEMÁTICO', eu:'KLIMATIZAZIO-KUTXA — SEKZIO ESKEMATIKOA', en:'CLIMATE BOX — SCHEMATIC CUTAWAY'},
+  svgRecirc:     {es:'RECIRCULACIÓN', eu:'BIRZIRKULAZIOA', en:'RECIRCULATION'},
+  svgDefrost:    {es:'DESEMPAÑADO', eu:'LAUSOA', en:'DEFROST'},
+  svgSuperior:   {es:'SUPERIOR', eu:'GOIKOA', en:'PANEL'},
+  svgFeet:       {es:'ZONA PIES', eu:'OINAK', en:'FOOT VENTS'},
+  svgRear:       {es:'TRASEROS', eu:'ATZEKOAK', en:'REAR VENTS'},
+  svgCabin:      {es:'HABITÁCULO', eu:'KABINA', en:'CABIN'},
+  svgIntake:     {es:'TOMA EXTERIOR', eu:'KANPOKO HARTUNEA', en:'OUTSIDE INTAKE'},
+  svgBlower:     {es:'SOPLANTE', eu:'TURBINA', en:'BLOWER'},
+  svgFilter:     {es:'FILTRO', eu:'IRAGAZKIA', en:'FILTER'},
+  svgEvap:       {es:'EVAPORADOR', eu:'LURRUNGAILUA', en:'EVAPORATOR'},
+  svgExpValve:   {es:'VÁLV. EXPANSIÓN', eu:'HEDAPEN-BALBULA', en:'EXPANSION VALVE'},
+  svgFreonHP:    {es:'FREÓN AP', eu:'HOZG. PRESIO H.', en:'REFRIGERANT HP'},
+  svgFreonLP:    {es:'FREÓN BP', eu:'HOZG. PRESIO T.', en:'REFRIGERANT LP'},
+  svgMixFlap:    {es:'TRAMPILLA MEZCLA', eu:'NAHASKETA-BALBULA', en:'MIX FLAP'},
+  svgHeaterRad:  {es:'RAD. CALEFACCIÓN', eu:'BEROGAILUAREN ERRAD.', en:'HEATER CORE'},
+  svgThermostat: {es:'TERMOSTATO', eu:'TERMOSTATOA', en:'THERMOSTAT'},
+  svgCoolant:    {es:'REFRIGERANTE MOTOR', eu:'MOTORRAREN HOZTE-LIKIDOA', en:'ENGINE COOLANT'},
+  svgCondensate: {es:'💧 condensado', eu:'💧 kondentsatua', en:'💧 condensate'},
+  lblExtTemp:    {es:'T° exterior: ', eu:'Kanpoko T°: ', en:'Outside T°: '},
+  lblConsigna:   {es:'Consigna habitáculo', eu:'Kabinaren helburua', en:'Cabin setpoint'},
+  lblFan:        {es:'Soplante: ', eu:'Turbina: ', en:'Blower: '},
+  lblSystem:     {es:'Sistema', eu:'Sistema', en:'System'},
+  pwrOff:        {es:'⏻ Encender', eu:'⏻ Piztu', en:'⏻ Turn on'},
+  pwrOn:         {es:'⏻ Encendido', eu:'⏻ Piztuta', en:'⏻ On'},
+  acOffBtn:      {es:'AC · A/C', eu:'AC · A/C', en:'AC · A/C'},
+  acOnBtn:       {es:'❄ AC · ACTIVO', eu:'❄ AC · AKTIBO', en:'❄ AC · ACTIVE'},
+  modeManualBtn: {es:'AUTO', eu:'AUTO', en:'AUTO'},
+  modeAutoBtn:   {es:'● AUTO', eu:'● AUTO', en:'● AUTO'},
+  lblDist:       {es:'Distribución', eu:'Banaketa', en:'Distribution'},
+  btnSuperior:   {es:'Superior', eu:'Goikoa', en:'Panel'},
+  btnFeet:       {es:'Pies', eu:'Oinak', en:'Feet'},
+  btnDefrost:    {es:'Desempañar', eu:'Lausoa kendu', en:'Defrost'},
+  lblRecirc:     {es:'Recirculación: ', eu:'Birzirkulazioa: ', en:'Recirculation: '},
+  lblRecircSuffix:{es:'% exterior', eu:'% kanpokoa', en:'% outside'},
+  lblMix:        {es:'Mezcla hacia radiador: ', eu:'Nahasketa erradiadorerako: ', en:'Mix to heater: '},
+  lblThermo:     {es:'Termostato calefacción: ', eu:'Berogailuaren termostatoa: ', en:'Heater thermostat: '},
+  lblThermoMid:  {es:'% abierto · núcleo ', eu:'% irekita · nukleoa ', en:'% open · core '},
+  lblCabinNow:   {es:'Habitáculo actual', eu:'Kabinaren uneko T°', en:'Current cabin'},
+  dataTitle:     {es:'Datos del sistema', eu:'Sistemaren datuak', en:'System data'},
+  dataExt:       {es:'T° aire exterior', eu:'Kanpoko airearen T°', en:'Outside air T°'},
+  dataEvap:      {es:'T° evaporador salida', eu:'Lurrungailuaren irteerako T°', en:'Evaporator outlet T°'},
+  dataMix:       {es:'Mezcla hacia radiador', eu:'Nahasketa erradiadorerako', en:'Mix to heater'},
+  dataThermo:    {es:'Termostato calefacción', eu:'Berogailuaren termostatoa', en:'Heater thermostat'},
+  dataHeaterCore:{es:'T° núcleo radiador', eu:'Erradiadorearen nukleoaren T°', en:'Heater core T°'},
+  dataRecirc:    {es:'Recirculación', eu:'Birzirkulazioa', en:'Recirculation'},
+  dataCabin:     {es:'T° habitáculo actual', eu:'Kabinaren uneko T°', en:'Current cabin T°'},
+  dataTarget:    {es:'Consigna / objetivo', eu:'Helburua', en:'Setpoint / target'},
+  dataFan:       {es:'Potencia soplante', eu:'Turbinaren potentzia', en:'Blower power'},
+  legendCold:    {es:' Aire frío (post-evaporador)', eu:' Aire hotza (lurrungailuaren ondoren)', en:' Cold air (post-evaporator)'},
+  legendHot:     {es:' Aire caliente (radiador)', eu:' Aire beroa (erradiadorea)', en:' Hot air (heater core)'},
+  legendOut:     {es:' Aire a temperatura de salida', eu:' Irteerako tenperaturan dagoen airea', en:' Air at outlet temperature'},
+  legendDrops:   {es:' Gotitas de humedad (↑ exterior/T°; con A/C se eliminan en el evaporador)', eu:' Hezetasun-tantak (↑ kanpokoa/T°; A/C-rekin lurrungailuan kentzen dira)', en:' Moisture droplets (↑ outside/T°; with A/C removed at the evaporator)'},
+  infoTitleOff:  {es:'Sistema apagado', eu:'Sistema itzalita', en:'System off'},
+  infoTextOff:   {es:'Pulsa «Encender» para arrancar el climatizador.', eu:'Sakatu «Piztu» klimatizailea abiarazteko.', en:'Press "Turn on" to start the climate system.'},
+  estadoOff:     {es:'Estado: OFF', eu:'Egoera: OFF', en:'Status: OFF'},
+  titleAuto:     {es:'Funcionamiento automático', eu:'Funtzionamendu automatikoa', en:'Automatic operation'},
+  titleManual:   {es:'Ajuste manual', eu:'Eskuzko doikuntza', en:'Manual adjustment'},
+  distTxtPanel:  {es:'COMPUERTA → SUPERIOR', eu:'ATEA → GOIKOA', en:'GATE → PANEL'},
+  distTxtFeet:   {es:'COMPUERTA → PIES / TRASEROS', eu:'ATEA → OINAK / ATZEKOAK', en:'GATE → FEET / REAR'},
+  distTxtDefrost:{es:'COMPUERTA → DESEMPAÑADO', eu:'ATEA → LAUSOA KENTZEA', en:'GATE → DEFROST'},
+  flowRecirc:    {es:'recirculación ({p}%)', eu:'birzirkulazioa (%{p})', en:'recirculation ({p}%)'},
+  flowExt:       {es:'exterior ({p}%)', eu:'kanpokoa (%{p})', en:'outside ({p}%)'},
+  mixNone:       {es:'sin paso por radiador', eu:'ez da erradiadoretik pasatzen', en:'no flow through the heater'},
+  mixAll:        {es:'todo pasa por radiador', eu:'guztia erradiadoretik pasatzen da', en:'all of it passes through the heater'},
+  mixPartial:    {es:'{p}% pasa por radiador', eu:'%{p} erradiadoretik pasatzen da', en:'{p}% passes through the heater'},
+  distExtraPanel:{es:'El aire sale por las rejillas superiores.', eu:'Airea goiko errejilletatik ateratzen da.', en:'Air comes out through the upper vents.'},
+  distExtraFeet: {es:'El aire se dirige a los pies y pasajeros traseros.', eu:'Airea oinetara eta atzeko bidaiarietara bideratzen da.', en:'Air is directed to the feet and rear passengers.'},
+  distExtraDefrost:{es:'Desempañado: prioridad al parabrisas.', eu:'Lausoa kentzea: lehentasuna aurreko kristalari.', en:'Defrost: priority to the windshield.'},
+  dryLowRecirc:  {es:' Poca humedad de entrada (casi todo recirculado).', eu:' Sarrerako hezetasun gutxi (ia guztia birzirkulatua).', en:' Little inlet moisture (almost all recirculated).'},
+  dryColdExt:    {es:' Aire exterior frío → poca humedad en el flujo.', eu:' Kanpoko aire hotza → hezetasun gutxi fluxuan.', en:' Cold outside air → little moisture in the flow.'},
+  dryAcOn:       {es:' A/C activo: las gotitas <b>se eliminan en el evaporador</b> (condensado).', eu:' A/C aktibo: tantak <b>lurrungailuan kentzen dira</b> (kondentsatua).', en:' A/C on: droplets <b>are removed at the evaporator</b> (condensate).'},
+  dryAcOff:      {es:' Sin A/C: la humedad <b>sigue con el aire</b> hasta las salidas.', eu:' A/C gabe: hezetasunak <b>airearekin jarraitzen du</b> irteeretaraino.', en:' Without A/C: moisture <b>stays with the air</b> all the way to the outlets.'},
+  thermoClosedTxt:{es:'Termostato cerrado: el núcleo no recibe calor y se enfría ({c} °C).', eu:'Termostatoa itxita: nukleoak ez du berorik jasotzen eta hozten ari da ({c} °C).', en:'Thermostat closed: the core gets no heat and is cooling down ({c} °C).'},
+  thermoOpenTxt: {es:'Termostato {p}% abierto: núcleo a {c} °C', eu:'Termostatoa %{p} irekita: nukleoa {c} °C-tan', en:'Thermostat {p}% open: core at {c} °C'},
+  thermoWarming: {es:' (calentando…)', eu:' (berotzen…)', en:' (heating…)'},
+  lblEntradaBold:{es:'Entrada:', eu:'Sarrera:', en:'Inlet:'},
+  lblMezclaBold: {es:'Mezcla:', eu:'Nahasketa:', en:'Mix:'},
+  lblTermostatoBold:{es:'Termostato:', eu:'Termostatoa:', en:'Thermostat:'},
+  fixedFilterSentence:{es:'El aire atraviesa el filtro y SIEMPRE el evaporador.', eu:'Aireak iragazkia eta BETI lurrungailua zeharkatzen ditu.', en:'The air passes through the filter and ALWAYS through the evaporator.'},
+  ventOutTemplate:{es:' → salen ~{v} °C.', eu:' → {v} °C inguru irteten dira.', en:' → comes out at ~{v} °C.'},
+  estadoOnTemplate:{es:'Estado: ON · {mode} · A/C {ac} · soplante {fan}%', eu:'Egoera: ON · {mode} · A/C {ac} · turbina %{fan}', en:'Status: ON · {mode} · A/C {ac} · blower {fan}%'},
+  modeManualWord:{es:'MANUAL', eu:'ESKUZKOA', en:'MANUAL'},
+  modeAutoWord:  {es:'AUTO', eu:'AUTO', en:'AUTO'},
+  acActiveWord:  {es:'ACTIVO (enfría + seca)', eu:'AKTIBO (hoztu + lehortu)', en:'ACTIVE (cools + dries)'},
+  acOffWord:     {es:'desconectado', eu:'deskonektatuta', en:'off'},
+  dRecircTemplate:{es:'{r}% recirc · {e}% ext.', eu:'%{r} birzirk. · %{e} kanp.', en:'{r}% recirc · {e}% ext.'},
+  dThermoTemplate:{es:'{p}% abierto', eu:'%{p} irekita', en:'{p}% open'},
+  warnBanner:    {es:'Objetivo {t} °C probablemente INALCANZABLE: el A/C está desconectado y en la calle hay {e} °C. ¡Activa el AC!',
+                  eu:'Helburua {t} °C ziurrenik EZIN DA LORTU: A/C deskonektatuta dago eta kalean {e} °C daude. Piztu AC-a!',
+                  en:'Target {t} °C is probably UNREACHABLE: A/C is off and it is {e} °C outside. Turn the AC on!'}
+};
+function ct(key, vars) {
+  var pack = CAJA_I18N[key];
+  var s = pack ? (pack[CAJA_LANG] || pack.es) : key;
+  if (vars) {
+    for (var k in vars) { s = s.split('{'+k+'}').join(vars[k]); }
+  }
+  return s;
+}
+function applyCajaStaticI18n() {
+  document.title = ct('pageTitle');
+  var els = document.querySelectorAll('[data-i18n]');
+  for (var i = 0; i < els.length; i++) {
+    els[i].textContent = ct(els[i].getAttribute('data-i18n'));
+  }
+}
+function setCajaLang(lang) {
+  CAJA_LANG = (lang === 'eu' || lang === 'en') ? lang : 'es';
+  applyCajaStaticI18n();
+  checkUnreachable();
+  render();
+  updateInfoPanel();
+}
+window.addEventListener('message', function(ev) {
+  var d = ev.data;
+  if (d && d.type === 'caja-set-lang') { setCajaLang(d.lang); }
+});
+// Si estamos embebidos en un iframe, reenviamos Escape al documento padre
+// para poder cerrar el modal aunque el foco esté dentro de la caja climática.
+document.addEventListener('keydown', function(ev) {
+  if (ev.key === 'Escape' && window.parent && window.parent !== window) {
+    try { window.parent.postMessage({ type: 'caja-close-modal' }, '*'); } catch (e) {}
+  }
+});
+
+function toggleLabels() {
+  labelsVisible = !labelsVisible;
+  var labels = document.querySelectorAll('.comp-label');
+  for (var i = 0; i < labels.length; i++) {
+    labels[i].style.opacity = labelsVisible ? '1' : '0';
+  }
+  var btn = $('btnToggleLabels');
+  if (btn) {
+    btn.textContent = labelsVisible ? ct('labelsShow') : ct('labelsHidden');
+  }
+}
+
+function iniciarSimulador() {
+  $('screen-menu').classList.remove('active');
+  $('screen-sim').classList.add('active');
+}
+function volverAlMenu() {
+  $('screen-sim').classList.remove('active');
+  $('screen-menu').classList.add('active');
+}
+
+function clamp(v,min,max){ return Math.min(max, Math.max(min,v)); }
+function fmt1(v){ var s = v.toFixed(1); return CAJA_LANG === 'en' ? s : s.replace('.', ','); }
+function mapRange(v,a,b,c,d){ return c+((v-a)/(b-a))*(d-c); }
+
+function evapOutTemp() {
+  if (!state.powerOn || state.fanLevel === 0) return state.extTemp;
+  return state.extTemp - (state.acOn ? EVAP_DROP_AC : EVAP_DROP_NOAC);
+}
+function ventOutTemp() {
+  var tEvap = Math.max(evapOutTemp(), 2);
+  var loadFactor = 1 - (state.fanLevel / 100) * 0.3;
+  var coreFactor = clamp((state.heaterCoreTemp - HEATER_COLD) / (HEATER_HOT - HEATER_COLD), 0, 1);
+  return tEvap + (state.mixHeat / 100) * HEAT_GAIN_MAX * loadFactor * coreFactor;
+}
+
+function colorForTemp(t) {
+  var stops = [[7,[87,185,217]],[30,[180,190,195]],[78,[255,90,54]]];
+  function lerp(a,b,f){ return a+(b-a)*f; }
+  var c = stops[stops.length-1][1];
+  for (var i=0;i<stops.length-1;i++){
+    if (t <= stops[i+1][0]) {
+      var f=(t-stops[i][0])/(stops[i+1][0]-stops[i][0]);
+      c=[lerp(stops[i][1][0],stops[i+1][1][0],f),
+         lerp(stops[i][1][1],stops[i+1][1][1],f),
+         lerp(stops[i][1][2],stops[i+1][1][2],f)];
+      break;
+    }
+  }
+  return 'rgb(' + Math.round(c[0]) + ',' + Math.round(c[1]) + ',' + Math.round(c[2]) + ')';
+}
+
+function setTempClass(node,t){
+  node.classList.remove('cold','hot','mild');
+  node.classList.add(t<=17 ? 'cold' : (t>=28 ? 'hot' : 'mild'));
+}
+
+function updateHeaterCore(dt) {
+  var span = HEATER_HOT - HEATER_COLD;
+  // El motor debe estar en marcha para generar calor; sin motor, el termostato
+  // no puede calentar el núcleo por mucho que esté abierto.
+  var target = state.powerOn ? (HEATER_COLD + span * (state.thermostatOpen / 100)) : HEATER_COLD;
+  // "Fluido pasando a través de él": la bomba de refrigerante circula mientras
+  // el motor/sistema está en marcha, con independencia de la posición del termostato.
+  var coolantFlowing = state.powerOn;
+  if (target > state.heaterCoreTemp) {
+    var warmRate = span / HEATER_WARM_SECONDS;
+    state.heaterCoreTemp = Math.min(target, state.heaterCoreTemp + warmRate * dt);
+  } else if (target < state.heaterCoreTemp) {
+    var coolSeconds = coolantFlowing ? HEATER_COOL_FLOWING_SECONDS : HEATER_COOL_STATIC_SECONDS;
+    var coolRate = span / coolSeconds;
+    state.heaterCoreTemp = Math.max(target, state.heaterCoreTemp - coolRate * dt);
+  }
+}
+
+function tick() {
+  updateHeaterCore(0.4);
+  if (!state.powerOn || state.fanLevel === 0) {
+    state.cabinTemp += (state.extTemp - state.cabinTemp) * 0.004;
+  } else {
+    var tVent = ventOutTemp();
+    var eff = 0.2 + (state.fanLevel / 100) * 0.3;
+    state.cabinTemp += (tVent - state.cabinTemp) * eff * 0.06;
+    state.cabinTemp = clamp(state.cabinTemp,
+      Math.min(tVent, state.extTemp) - 1, Math.max(tVent, state.extTemp) + 1);
+  }
+  checkUnreachable();
+  render();
+}
+
+function autoLogicStep() {
+  if (!state.autoMode || !state.powerOn) return;
+  var need = state.targetTemp - state.cabinTemp;
+
+  var desiredMix;
+  if (need > 0.4)       desiredMix = clamp((need / (HEAT_GAIN_MAX * 0.45)) * 100, 0, 100);
+  else if (need < -0.4) desiredMix = 0;
+  else                  desiredMix = state.mixHeat;
+
+  var desiredRecirc;
+  if (need < -1 && state.acOn && state.extTemp > 26) desiredRecirc = 15;
+  else if (need > 2 && state.extTemp < 8)            desiredRecirc = 90;
+  else if (need < -3 && !state.acOn)                 desiredRecirc = 85;
+  else                                               desiredRecirc = 40;
+
+  var err = Math.abs(need);
+  var desiredFan;
+  if (err < 0.6)      desiredFan = 25;
+  else if (err < 2)   desiredFan = 45;
+  else if (err < 5)   desiredFan = 70;
+  else                desiredFan = 92;
+  if (state.dist === 'defrost') desiredFan = Math.max(desiredFan, 60);
+
+  autoAnim.mix    += clamp(desiredMix    - autoAnim.mix,    -1.2, 1.2);
+  autoAnim.recirc += clamp(desiredRecirc - autoAnim.recirc, -1.2, 1.2);
+  autoAnim.fan    += clamp(desiredFan    - autoAnim.fan,    -1.5, 1.5);
+  state.mixHeat   = clamp(autoAnim.mix, 0, 100);
+  state.recircExt = clamp(autoAnim.recirc, 0, 100);
+  state.fanLevel  = clamp(autoAnim.fan, 0, 100);
+  syncManualSlidersFromState();
+}
+
+function checkUnreachable() {
+  var banner = $('warnBanner');
+  var txt = $('warnText');
+  if (!state.powerOn) { banner.classList.remove('show'); return; }
+  var need = state.targetTemp - state.cabinTemp;
+  if (need < -1 && !state.acOn && state.extTemp > state.targetTemp) {
+    txt.textContent = ct('warnBanner', {t: fmt1(state.targetTemp), e: fmt1(state.extTemp)});
+    banner.classList.add('show');
+  } else {
+    banner.classList.remove('show');
+  }
+}
+function render() {
+  var tEvap = evapOutTemp();
+  var tVent = ventOutTemp();
+  var flowing = state.powerOn && state.fanLevel > 0;
+
+  // Textos y valores
+  $('extTempLabel').textContent  = fmt1(state.extTemp)+' °C';
+  $('extTempSvg').textContent    = fmt1(state.extTemp)+' °C';
+  $('recircTempSvg').textContent = fmt1(state.cabinTemp)+' °C';
+  $('evapTempSvg').textContent   = fmt1(tEvap)+' °C';
+  $('heaterTempSvg').textContent = fmt1(state.heaterCoreTemp)+' °C';
+  $('heaterTempSvg').setAttribute('fill', colorForTemp(state.heaterCoreTemp));
+  $('thermoLabel').textContent   = Math.round(state.thermostatOpen);
+  $('thermoTempLabel').textContent = fmt1(state.heaterCoreTemp)+' °C';
+  $('fanLabel').textContent      = Math.round(state.fanLevel);
+  $('recircLabel').textContent   = Math.round(state.recircExt);
+  $('mixLabel').textContent      = Math.round(state.mixHeat);
+  $('targetReadout').textContent = fmt1(state.targetTemp)+' °C';
+  setTempClass($('targetReadout'), state.targetTemp);
+  $('cabinReadout').textContent  = fmt1(state.cabinTemp)+' °C';
+  setTempClass($('cabinReadout'), state.cabinTemp);
+  $('cabinTempSvg').textContent  = fmt1(state.cabinTemp)+' °C';
+
+  var diff = state.targetTemp - state.cabinTemp;
+  var delta = $('targetDeltaSvg');
+  delta.textContent = flowing ? (diff>0.3 ? '▲ +'+fmt1(diff) : (diff<-0.3 ? '▼ '+fmt1(diff) : '✓')) : '';
+  delta.setAttribute('fill', diff>0.3?'#ff5a36':(diff<-0.3?'#57b9d9':'#3fbf6a'));
+
+  $('d-ext').textContent    = fmt1(state.extTemp)+' °C';
+  $('d-evap').textContent   = fmt1(tEvap)+' °C';
+  $('d-mix').textContent    = Math.round(state.mixHeat)+'%';
+  $('d-thermo').textContent = ct('dThermoTemplate', {p: Math.round(state.thermostatOpen)});
+  $('d-heatercore').textContent = fmt1(state.heaterCoreTemp)+' °C';
+  $('d-recirc').textContent = ct('dRecircTemplate', {r: Math.round(100-state.recircExt), e: Math.round(state.recircExt)});
+  $('d-cabin').textContent  = fmt1(state.cabinTemp)+' °C';
+  $('d-target').textContent = fmt1(state.targetTemp)+' °C';
+  $('d-fan').textContent    = state.powerOn ? Math.round(state.fanLevel)+'%' : 'OFF';
+  setTempClass($('d-evap'), tEvap);
+  setTempClass($('d-cabin'), state.cabinTemp);
+
+  // Conductos de aire anchos pero legibles (~44 px ≈ tamaño de los radiadores)
+  function setPipe(id, stroke, opacity, isFlow, width) {
+    var el = $(id);
+    if (!el) return;
+    el.setAttribute('stroke', stroke);
+    el.setAttribute('opacity', opacity);
+    if (width !== undefined) {
+      el.setAttribute('stroke-width', width);
+    } else {
+      el.setAttribute('stroke-width', id === 'pipe-rear' ? '36' : '44');
+    }
+    if (isFlow && flowing) el.classList.add('pipe-flowing');
+    else el.classList.remove('pipe-flowing');
+  }
+
+  // ---- RECIRCULACIÓN: anchos proporcionales ----
+  var extPct = state.recircExt;
+  var recircPct = 100 - state.recircExt;
+  var extW = 44 * extPct / 100;
+  var recW = 44 * recircPct / 100;
+  setPipe('pipe-intake-ext', colorForTemp(state.extTemp), (flowing && extPct > 0) ? 0.9 : 0, flowing && extPct > 0, extW);
+  setPipe('pipe-intake-recirc', colorForTemp(state.cabinTemp), (flowing && recircPct > 0) ? 0.9 : 0, flowing && recircPct > 0, recW);
+  setPipe('pipe-recirc', colorForTemp(state.cabinTemp), (flowing && recircPct > 0) ? 0.9 : 0, flowing && recircPct > 0, recW);
+
+  // ---- CONDUCTOS FIJOS (sin proporcionalidad) ----
+  setPipe('pipe-blower-evap', colorForTemp(state.extTemp), flowing ? 0.85 : 0, flowing);
+  setPipe('pipe-filter-evap', colorForTemp(state.extTemp), flowing ? 0.85 : 0, flowing);
+  setPipe('pipe-evap-mix', colorForTemp(tEvap), flowing ? 0.85 : 0, flowing);
+
+  // ---- MEZCLA BYPASS / RADIADOR: anchos proporcionales ----
+  var bypassPct = 100 - state.mixHeat;
+  var heaterPct = state.mixHeat;
+  var bypassW = 44 * bypassPct / 100;
+  var heaterW = 44 * heaterPct / 100;
+  setPipe('pipe-bypass', colorForTemp(tEvap), (flowing && bypassPct > 0) ? 0.9 : 0, flowing && bypassPct > 0, bypassW);
+  setPipe('pipe-mix-out', colorForTemp(tEvap), (flowing && bypassPct > 0) ? 0.9 : 0, flowing && bypassPct > 0, bypassW);
+  setPipe('pipe-to-heater', colorForTemp(tEvap), (flowing && heaterPct > 0) ? 0.9 : 0, flowing && heaterPct > 0, heaterW);
+  var heaterLoadFactor = 1 - (state.fanLevel / 100) * 0.3;
+  var heaterCoreFactor = clamp((state.heaterCoreTemp - HEATER_COLD) / (HEATER_HOT - HEATER_COLD), 0, 1);
+  var heaterOutAirTemp = tEvap + HEAT_GAIN_MAX * heaterLoadFactor * heaterCoreFactor;
+  setPipe('pipe-through-heater', colorForTemp(heaterOutAirTemp), (flowing && heaterPct > 0) ? 0.9 : 0, flowing && heaterPct > 0, heaterW);
+  setPipe('pipe-heater-out', colorForTemp(heaterOutAirTemp), (flowing && heaterPct > 0) ? 0.9 : 0, flowing && heaterPct > 0, heaterW);
+
+  var distPairs = [['pipe-defrost','defrost-flow-g','defrost','label-defrost'],
+                   ['pipe-panel','panel-flow-g','panel','label-panel'],
+                   ['pipe-feet','feet-flow-g','feet','label-feet'],
+                   ['pipe-rear','rear-flow-g','rear','label-rear']];
+  for (var i=0;i<distPairs.length;i++){
+    var p = $(distPairs[i][0]);
+    var key = distPairs[i][2];
+    var active = flowing && (state.dist === key || (state.dist === 'feet' && key === 'rear'));
+    p.setAttribute('stroke', colorForTemp(tVent));
+    p.setAttribute('opacity', active ? 0.9 : 0);
+    p.setAttribute('stroke-width', key === 'rear' ? '36' : '44');
+    if (active) p.classList.add('pipe-flowing');
+    else p.classList.remove('pipe-flowing');
+    var paths = $(distPairs[i][1]).querySelectorAll('path');
+    for (var j=0;j<paths.length;j++){
+      paths[j].setAttribute('opacity', active ? 1 : 0);
+      paths[j].setAttribute('stroke', colorForTemp(tVent));
+      paths[j].setAttribute('stroke-width', active ? '4' : '2');
+    }
+    var lab = $(distPairs[i][3]);
+    if (lab) {
+      lab.setAttribute('fill', active ? colorForTemp(tVent) : '#8b939b');
+      lab.setAttribute('font-weight', active ? '700' : '400');
+    }
+  }
+
+  // Trampillas (rotación)
+  $('recirc-flap-g').setAttribute('transform',
+    'rotate('+mapRange(state.recircExt,0,100,0,90)+' 215 240)');
+  $('mix-flap-g').setAttribute('transform',
+    'rotate('+mapRange(state.mixHeat,0,100,90,-45)+' 640 410)');
+
+  // Termostato: aguja indicadora + color del núcleo según su temperatura real
+  $('thermostat-indicator').setAttribute('transform',
+    'rotate('+mapRange(state.thermostatOpen,0,100,10,100)+' 712 528)');
+  var coreFactor = clamp((state.heaterCoreTemp - HEATER_COLD) / (HEATER_HOT - HEATER_COLD), 0, 1);
+  $('heater-core-cool-overlay').setAttribute('opacity', 1 - coreFactor);
+
+  // Compuerta de distribución
+  var distAngle = -20; // panel
+  var distTxt = ct('distTxtPanel');
+  if (state.dist === 'feet') { distAngle = 55; distTxt = ct('distTxtFeet'); }
+  else if (state.dist === 'defrost') { distAngle = -75; distTxt = ct('distTxtDefrost'); }
+  $('dist-flap-g').setAttribute('transform', 'rotate('+distAngle+' 860 418)');
+  var dfl = $('distFlapLabel');
+  if (dfl) dfl.textContent = distTxt;
+
+  // Recirculación: flujo SOLO si hay aire real del habitáculo (< 99 % exterior)
+  var takingRec = flowing && state.recircExt < 99;
+  $('recirc-arrows').setAttribute('opacity', takingRec ? Math.min(1, (100 - state.recircExt)/50) + 0.3 : 0);
+  $('recircTempSvg').setAttribute('opacity', takingRec ? 1 : 0.15);
+  $('recircLabelText').setAttribute('opacity', takingRec ? 1 : 0.25);
+  // pipe-recirc ya se controla con setPipe arriba (proporcional)
+  // Solo mantenemos la lógica de flechas y etiquetas
+
+  // Flechas de toma exterior
+  $('intake-arrows').setAttribute('opacity',
+    (flowing && state.recircExt > 0.5) ? Math.min(1, state.recircExt/70) : 0.05);
+
+  // Soplante
+  $('blower-rot-g').setAttribute('opacity', flowing ? 0.35 + (state.fanLevel/100)*0.65 : 0.12);
+  $('evapTempSvg').setAttribute('fill', state.acOn ? '#8fdcff' : '#8b939b');
+
+  // Humedad: independiente del A/C; con A/C se elimina en evaporador
+  var extFrac = state.recircExt / 100;
+  var tempHumidFactor = clamp((state.extTemp + 5) / 45, 0.15, 1);
+  var humidityLoad = extFrac * (0.35 + 0.65 * tempHumidFactor);
+  if (extFrac < 0.2) humidityLoad *= 0.25;
+  var humidIntensity = (flowing && humidityLoad > 0.05)
+    ? clamp(humidityLoad * (0.55 + state.fanLevel / 180), 0, 1) : 0;
+  var acDrying = state.acOn && humidIntensity > 0;
+
+  function prioOk(el, intensity) {
+    var prio = parseInt(el.getAttribute('data-prio') || '1', 10);
+    return prio === 1 || (prio === 2 && intensity > 0.3) || (prio === 3 && intensity > 0.55);
+  }
+  function activateDropletsPre(group, intensity) {
+    if (!group) return;
+    group.setAttribute('opacity', intensity > 0 ? Math.max(0.75, intensity) : 0);
+    var drops = group.querySelectorAll('.droplet');
+    for (var i = 0; i < drops.length; i++) {
+      if (intensity > 0 && prioOk(drops[i], intensity)) drops[i].classList.add('active');
+      else drops[i].classList.remove('active');
+    }
+  }
+  function activateDropletsPost(group, intensity) {
+    if (!group) return;
+    group.setAttribute('opacity', intensity > 0 ? Math.max(0.75, intensity) : 0);
+    var bypassOn = state.mixHeat < 97;
+    var heaterOn = state.mixHeat > 3;
+    var drops = group.querySelectorAll('.droplet');
+    for (var i = 0; i < drops.length; i++) {
+      var path = drops[i].getAttribute('data-path') || 'common';
+      var pathOk = false;
+      if (path === 'common' || path === 'junction') pathOk = true;
+      else if (path === 'bypass') pathOk = bypassOn;
+      else if (path === 'heater') pathOk = heaterOn;
+      else if (path === 'panel') pathOk = (state.dist === 'panel');
+      else if (path === 'feet') pathOk = (state.dist === 'feet');
+      else if (path === 'defrost') pathOk = (state.dist === 'defrost');
+      var show = intensity > 0 && pathOk && prioOk(drops[i], intensity);
+      if (show) drops[i].classList.add('active');
+      else drops[i].classList.remove('active');
+    }
+  }
+  activateDropletsPre($('humidity-droplets-pre'), humidIntensity);
+  activateDropletsPost($('humidity-droplets-post'), acDrying ? 0 : humidIntensity);
+
+  var condensateG = $('condensate-g');
+  if (condensateG) {
+    var cInt = acDrying ? humidIntensity : 0;
+    condensateG.setAttribute('opacity', cInt > 0.1 ? Math.max(0.35, cInt) : 0);
+    var cDrops = condensateG.querySelectorAll('.condensate-drop');
+    for (var ci = 0; ci < cDrops.length; ci++) {
+      var cp = parseInt(cDrops[ci].getAttribute('data-prio') || '1', 10);
+      var cShow = cInt > 0.1 && (cp === 1 || (cp === 2 && cInt > 0.35) || (cp === 3 && cInt > 0.6));
+      if (cShow) cDrops[ci].classList.add('active');
+      else cDrops[ci].classList.remove('active');
+    }
+    var cLab = $('condensateLabel');
+    if (cLab) cLab.setAttribute('opacity', cInt > 0.15 ? 0.95 : 0);
+  }
+
+  updateInfoPanel();
+}
+
+function updateInfoPanel() {
+  var title = $('infoTitle');
+  var text = $('infoText');
+  var line = $('estadoLine');
+  if (!state.powerOn) {
+    title.textContent = ct('infoTitleOff');
+    text.textContent = ct('infoTextOff');
+    line.textContent = ct('estadoOff');
+    return;
+  }
+  var flows=[];
+  if (state.recircExt<98) flows.push(ct('flowRecirc', {p: Math.round(100-state.recircExt)}));
+  if (state.recircExt>2)  flows.push(ct('flowExt', {p: Math.round(state.recircExt)}));
+  var mixTxt;
+  if (state.mixHeat<3)       mixTxt=ct('mixNone');
+  else if (state.mixHeat>97) mixTxt=ct('mixAll');
+  else                       mixTxt=ct('mixPartial', {p: Math.round(state.mixHeat)});
+  var extra;
+  if (state.dist==='panel') extra=ct('distExtraPanel');
+  else if (state.dist==='feet') extra=ct('distExtraFeet');
+  else                          extra=ct('distExtraDefrost');
+  title.textContent = state.autoMode ? ct('titleAuto') : ct('titleManual');
+  var dryTxt;
+  if (state.recircExt < 15) dryTxt = ct('dryLowRecirc');
+  else if (state.extTemp < 10) dryTxt = ct('dryColdExt');
+  else if (state.acOn) dryTxt = ct('dryAcOn');
+  else dryTxt = ct('dryAcOff');
+  var thermoTxt;
+  if (state.thermostatOpen < 3) thermoTxt = ct('thermoClosedTxt', {c: fmt1(state.heaterCoreTemp)});
+  else thermoTxt = ct('thermoOpenTxt', {p: Math.round(state.thermostatOpen), c: fmt1(state.heaterCoreTemp)}) +
+    (state.heaterCoreTemp < HEATER_HOT-1 ? ct('thermoWarming') : '.');
+  text.innerHTML =
+    '<b>'+ct('lblEntradaBold')+'</b> '+flows.join(' + ')+'. '+ct('fixedFilterSentence')+'<br>'+
+    '<b>'+ct('lblMezclaBold')+'</b> '+mixTxt+ct('ventOutTemplate', {v: fmt1(ventOutTemp())})+'<br>'+
+    '<b>'+ct('lblTermostatoBold')+'</b> '+thermoTxt+'<br>'+extra+dryTxt;
+  line.textContent = ct('estadoOnTemplate', {
+    mode: state.autoMode ? ct('modeAutoWord') : ct('modeManualWord'),
+    ac: state.acOn ? ct('acActiveWord') : ct('acOffWord'),
+    fan: Math.round(state.fanLevel)
+  });
+}
+
+// ---------- EVENTOS ----------
+document.getElementById('extTempSlider').addEventListener('input', function(e){
+  state.extTemp=+e.target.value; render();
+});
+document.getElementById('targetTempSlider').addEventListener('input', function(e){
+  state.targetTemp=+e.target.value; render();
+});
+document.getElementById('fanSlider').addEventListener('input', function(e){
+  if (state.autoMode){ e.target.value=Math.round(state.fanLevel); return; }
+  state.fanLevel=+e.target.value;
+});
+document.getElementById('recircSlider').addEventListener('input', function(e){
+  if (state.autoMode){ e.target.value=Math.round(state.recircExt); return; }
+  state.recircExt=+e.target.value;
+});
+document.getElementById('mixSlider').addEventListener('input', function(e){
+  if (state.autoMode){ e.target.value=Math.round(state.mixHeat); return; }
+  state.mixHeat=+e.target.value;
+});
+document.getElementById('thermoSlider').addEventListener('input', function(e){
+  // El termostato es una válvula mecánica: se controla siempre a mano,
+  // incluso en modo AUTO (no forma parte de la lógica de la ECU de climatización).
+  state.thermostatOpen=+e.target.value;
+  render();
+});
+
+document.getElementById('btnPower').addEventListener('click', function(){
+  state.powerOn = !state.powerOn;
+  this.textContent = state.powerOn ? ct('pwrOn') : ct('pwrOff');
+  this.classList.toggle('on-manual', state.powerOn);
+  if (state.powerOn && state.fanLevel === 0 && !state.autoMode) state.fanLevel = 40;
+  checkUnreachable();
+  render();
+});
+
+document.getElementById('btnAC').addEventListener('click', function(){
+  state.acOn = !state.acOn;
+  this.classList.toggle('on-ac', state.acOn);
+  this.textContent = state.acOn ? ct('acOnBtn') : ct('acOffBtn');
+  checkUnreachable();
+  render();
+});
+
+document.getElementById('btnMode').addEventListener('click', function(){
+  state.autoMode = !state.autoMode;
+  this.textContent = state.autoMode ? ct('modeAutoBtn') : ct('modeManualBtn');
+  this.classList.toggle('on-auto', state.autoMode);
+  var mp = document.getElementById('manualPanel');
+  mp.style.opacity = state.autoMode ? 0.45 : 1;
+  mp.style.pointerEvents = state.autoMode ? 'none' : 'auto';
+  if (state.autoMode && state.powerOn) {
+    autoAnim = { recirc:state.recircExt, mix:state.mixHeat, fan:state.fanLevel };
+  }
+  render();
+});
+
+var distBtns = [
+  ['btnDistPanel','panel'],
+  ['btnDistFeet','feet'],
+  ['btnDistDefrost','defrost']
+];
+for (var k=0;k<distBtns.length;k++){
+  (function(btnId, key){
+    document.getElementById(btnId).addEventListener('click', function(){
+      state.dist = key;
+      for (var m=0;m<distBtns.length;m++){
+        document.getElementById(distBtns[m][0]).classList.toggle(
+          'on-dist', distBtns[m][1] === key);
+      }
+      render();
+    });
+  })(distBtns[k][0], distBtns[k][1]);
+}
+
+// ---------- UTILIDADES Y RESET ----------
+function syncManualSlidersFromState(){
+  document.getElementById('recircSlider').value = Math.round(state.recircExt);
+  document.getElementById('mixSlider').value    = Math.round(state.mixHeat);
+  document.getElementById('fanSlider').value    = Math.round(state.fanLevel);
+  document.getElementById('thermoSlider').value = Math.round(state.thermostatOpen);
+}
+
+function resetSim(){
+  state.powerOn = false; state.acOn = false; state.autoMode = false;
+  state.extTemp = 35; state.targetTemp = 22; state.cabinTemp = 25;
+  state.fanLevel = 0; state.recircExt = 100; state.mixHeat = 0; state.dist = 'panel';
+  state.thermostatOpen = 0; state.heaterCoreTemp = HEATER_COLD;
+  document.getElementById('extTempSlider').value = 35;
+  document.getElementById('targetTempSlider').value = 22;
+  document.getElementById('fanSlider').value = 0;
+  document.getElementById('recircSlider').value = 100;
+  document.getElementById('mixSlider').value = 0;
+  document.getElementById('thermoSlider').value = 0;
+  var bp = document.getElementById('btnPower');
+  bp.textContent = ct('pwrOff'); bp.classList.remove('on-manual');
+  var bac = document.getElementById('btnAC');
+  bac.textContent = ct('acOffBtn'); bac.classList.remove('on-ac');
+  var bm = document.getElementById('btnMode');
+  bm.textContent = ct('modeManualBtn'); bm.classList.remove('on-auto');
+  var mp = document.getElementById('manualPanel');
+  mp.style.opacity = 1; mp.style.pointerEvents = 'auto';
+  document.getElementById('btnDistPanel').classList.add('on-dist');
+  document.getElementById('btnDistFeet').classList.remove('on-dist');
+  document.getElementById('btnDistDefrost').classList.remove('on-dist');
+  document.getElementById('warnBanner').classList.remove('show');
+  render();
+}
+
+// ---------- ARRANQUE ----------
+setInterval(autoLogicStep, 120);
+setInterval(tick, 400);
+
+// Rotación continua del soplante
+(function animateBlower() {
+  var g = document.getElementById('blower-rot-g');
+  if (g && state.powerOn && state.fanLevel > 0) {
+    var speed = 500 - (state.fanLevel / 100) * 380;
+    var angle = (performance.now() / speed * 360) % 360;
+    g.setAttribute('transform', 'rotate(' + angle + ' 215 310)');
+  }
+  requestAnimationFrame(animateBlower);
+})();
+
+render();
+applyCajaStaticI18n();
+<\/script>
+</body>
+</html></script>
 </body>
 </html>
